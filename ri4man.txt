@@ -1,0 +1,707 @@
+ロボットインテリジェンス　ROSを使った実習課題4　　　ver.1.0.2   20201126
+
+※ 最新の内容は http://edu.isc.chubu.ac.jp/naga/ri/ri6.html を確認する。
+
+### 目的
+
+URDF 形式で N 足ロボットのモデルを作成して、C++ のプログラムから各関節
+の動きを指示して、gazebo 上で歩行させる。
+
+・N 足歩行ロボットを作る。ゾウ、キリン、トラ、パンダ、犬、人、アリなど。
+・X軸(赤色)の正値の方向に 5 m 歩行する。
+・ロボットの大きさについて、縦、横、高さの長さはいずれも 2 m 以内。
+
+URDFでロボットのモデルを記述する方法を身に付ける。
+gazebo シミュレータ上でロボットを動かす方法を身に付ける。
+
+### 凡例
+
+以下の説明で
+VERSION は使っている ROS の version (indigo, kinetic, melodic)に置き換える。
+YOURACCOUNT はログインしているアカウント名に置き換える。
+YOURWS はプロジェクト ri4 を置くワークスペースの名前に置き換える。
+パッケージは ri4 とする。ロボット名、ネームスペースは ri4 となる。
+各種ファイル名、実行ファイル名は er14000w とする。
+
+### (2019年以前) 最初に配布したサンプルとの違い
+
+・ロボットモデルの記述と、関節を動かすプログラムを１個のパッケージに
+　まとめた。
+・base_link を空リンクにして、ロボットの実体を表すリンク body を別に
+　用意した。
+・ロボットを配置する座標を(0, 0, 0) から (1, 1, 1) に変更した。
+・gazebo の起動直後を停止状態にして、再生ボタンを押した時に
+　シミュレーションが始まるようにした。
+
+### Gazebo を使う準備
+
+普通に ROS をインストールした状態では、gazeboに関連するファイルや機能が
+不足することがあるので、以下を実行しておく。実行しておかないと起動は
+するが関節が動かない場合がある。
+kinetic 以外の場合は適宜バージョンの名称を変更する。indigo, melodic など。
+
+$ sudo apt-get update
+$ sudo apt-get install ros-kinetic-ros-control*
+$ sudo apt-get install ros-kinetic-gazebo-*
+$ sudo apt-get install ros-kinetic-control*
+
+ワークスペースは既存のものでもよい。その場合（１）または（２）から実行する。
+ワークスペースを新規に作成する場合は次の操作になる。
+
+$ mkdir YOURWS
+$ cd YOURWS
+$ mkdir src
+$ cd src
+$ catkin_init_workspace
+$ cd ..
+$ catkin_make
+$ vim ~/.bashrc
+開いたファイルの末尾に次の2行のコマンドがもし無ければ、書き加えて改行して
+変更した内容を保存する。
+source /opt/ros/VERSION/setup.bash
+source ~/YOURWS/devel/setup.bash
+$ source ~/.bashrc
+
+この後は次の（１），（２）のどちらかを実行する。
+
+（１）新しいサンプルを展開するとできるパケージ ri4 をまとめてコピー
+　　して使用する場合
+
+展開した ri4 を自分のワークスペースの src 下にコピーする。
+その後（３）へ
+
+（２）手動でパッケージを作成して、必要なファイルをコピーする場合
+
+$ cd src
+$ catkin_create_pkg ri4 roscpp rospy urdf
+$ cd ri4
+$ mkdir launch urdf config 
+
+その後は、新しく配布したサンプルファイルから以下に示す必要な５個の
+ファイルを適切なディレクトリにコピーする。その後（３）へ
+
+（３）ファイルの準備ができたら動作確認に進む。
+
+この文書の下の方にある、
+・rviz で構造と各ジョイントの動作確認をする
+・実行ファイルのビルド
+・gazebo　で動作のシミュレーションを実行する
+の指示に従って動作確認を行う。
+
+### 設定ファイルが表す内容
+
+ロボットのモデルの記述と関節を動かすには以下の５個のファイルが
+必要になる。
+
+・urdf/er14000w.urdf : ロボットの構造(link, joint)を記述する。
+・config/er14000w.yaml : joint と動きを指示するプログラムとの関連
+　　　　　　　　　　　　を指定する。
+・src/er14000w.cpp : joint の動き方を指示するプログラム
+・launch/er14000w_rv.launch : rviz を起動する
+・launch/er14000w_gz.launch : gazebo を起動する
+
+※ launch 以下の２個の .launch ファイルは、ROS の version に依存する
+ので、自分が使う version に対応するファイルをコピーして使用する。
+例
+$ cp er14000w_gz.launch.kinetic er14000w_gz.launch
+
+動かないジョイントやリンクを追加する場合は、er14000w.urdf に
+だけ追記すればよい。
+動くジョイント、リンクを追加する場合は、上記 er14000w_rv.launch
+以外の４個のファイルに追記する内容がある。
+
+### 設定ファイルの内容の確認と変更
+
+設定ファイルの各所でプロジェクト名、プログラム名 (ri4, er14000w)
+の記述が必要となる。これらの名前を変更する場合
+(パッケージ名を変更する場合、ファイル名を自分の学籍番号に
+変更する場合) は以下を参考にして適切な内容に書き換える。
+以下ではプロジェクト名、プログラム名を (ri4, er14000w)
+にするという仮定でどの部分の変更が必要になるかを示している。
+
+$ gedit urdf/er14000w.urdf
+  3行目最後を "ri4" にする
+  6行目途中を ri4 にする
+
+※ URDFファイル中、kinetic とiIndigo で記述が異なる部分がある。
+<hardwareInterface>の設定において、
+Kinetic の場合は次のように記述する。
+<hardwareInterface>hardware_interface/EffortJointInterface
+Indigo の場合は次のように記述する。
+<hardwareInterface>EffortJointInterface
+
+$ gedit src/er14000w.cpp
+  110行目以降の Control の行をすべて 
+  Control1((char*)"/ri4/ 
+  Control2((char*)"/ri4/
+  など、 ri4 を含むように変更する
+
+$ gedit config/er14000w.yaml
+  先頭を ri4: にする
+
+$ gedit launch/er14000w_rv.launch
+  2行目途中を (find ri4) にする
+  2行目最後を urdf/er14000w.urdf にする
+
+$ gedit launch/er14000w_gz.launch
+  6行目途中を (find ri4) にする
+  6行目最後を urdf/er14000w.urdf にする
+  13行目最後を -model ri4 にする
+  15行目途中を (find ri4) にする
+  15行目途中を config/er14000w.yaml にする
+  17行目以降をすべて ns="/ri4" にする
+
+YOURWS/src/ri4/CMakeLists.txt に関して、
+$ gedit CMakeLists.txt
+  末尾に以下の2行を追加する。
+add_executable(er14000w src/er14000w.cpp)
+target_link_libraries(er14000w ${catkin_LIBRARIES})
+
+### rviz で構造と各ジョイントの動作確認をする
+
+$ roslaunch ri4 er14000w_rv.launch
+  左下の Add ボタンから RobotModel を追加する
+  左上の map と書いてあるところを body に変更、改行する。
+  赤いロボットのモデルが現れる。
+  5個のスライダを左右に動かすと各関節が動く。
+
+ri4_rviz.png のような画面になる。
+
+### 実行ファイルのビルド、 gazebo で必要になる。
+
+ワークスペース YOURWS に移動してから、ビルドする。
+$ cd
+$ cd YOURWS
+$ catkin_make
+
+### gazebo で動作のシミュレーションを実行する
+
+$ roslaunch ri4 er14000w_gz.launch
+  window 左下の再生ボタンを押すとロボットが地面に降りてくる。
+$ rosrun ri4 er14000w
+  プログラムの指示で各ジョイントが動く。
+
+ri4_gazebo.png のような画面になる。
+ri4.mp4 は動画として動きを見ることができる。
+
+### gazebo の基礎
+
+・ROS の publish と subscribe の機能を使って、gazebo と ROS の間で通信を行う。
+・剛体モデルに対して、力、衝突、速度、加速度の計算を含む動力学
+　シミュレーションを行う。
+・画面上の赤、緑、青色の直線は、それぞれ X, Y, Z の各軸を表す。
+・３直線の交点が座標原点 (0, 0, 0) になる。
+・座標原点から赤、緑、青色の直線が伸びる方向が X, Y, Z 各軸の正値の方向になる。
+　直線が描画されない方向が負値の方向になる。
+・地上面のマス目は１辺が 1m を表す。
+・この課題では、X 軸の正値の方向をロボットの前面とする。
+・マウスの左ボタン、中ボタンを押してドラッグすると、視点の移動や回転ができる。
+　マウスのホイールを回転させると視点の遠近方向の移動ができる。
+
+### URDF の基礎
+
+・URDFは剛体リンクを組み合わせてロボットのモデルを記述することができる。
+・記述したモデルは gazebo の環境内で動力学シミュレーションを行うことができる。
+・剛体リンクは直方体、円柱、球 (この例では扱わない) が使用できる。
+　原点を指定しない場合は重心が自動的に原点になる。
+・リンク間にはジョイントを設定して、固定したり関節のように動かすことができる。
+・ジョイントには親子関係があり、親リンクの指定した場所に子リンクを接続する。
+・ジョイントにモータを指定することで、駆動力を与えることができる。
+・長さの単位は m, 重さの単位は kg を使用する。
+・XML 形式のタグを用いて記述する。
+
+以下ではサンプルの URDFファイル er14000w.urdf を例として、具体的な記述の
+仕方を説明する。ロボットの本体となるリンク body と、そこに接続されるリンクの一つ
+jointy の記述の仕方を取り上げる。
+
+<?xml version="1.0"?>                                         (0)
+
+<robot name="ri4">
+    <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>ri4</robotNamespace>
+      </plugin>
+    </gazebo>
+
+    <link name="base_link"> </link>
+
+    <joint name="joint0" type="fixed">                        (1)
+        <parent link="base_link"/>                            (2)
+	<child link="body"/>                                  (2)
+	<origin xyz= "1 1 1" rpy="0 0 0" />                   (3)
+    </joint>
+
+    <link name="body">                                        (4)
+        <visual>                                              (5)
+	    <origin xyz="0 0 0" rpy="0 0 0"/>                 (6)
+	    <geometry> <box size="0.8 0.4 0.6"/> </geometry>  (7)
+	</visual>
+	<collision>                                           (8)
+	    <origin xyz="0 0 0" rpy="0 0 0"/>
+	    <geometry> <box size="0.8 0.4 0.6"/> </geometry>
+	</collision>
+	<inertial>                                            (9)
+	    <origin xyz="0 0 0" rpy="0 0 0"/> <mass value="20"/>  (10)
+	    <inertia ixx="5e-2" ixy="0" ixz="0"
+	             iyy="5e-2" iyz="0" izz="5e-2"/>          (11)
+	</inertial>
+    </link>
+
+(0) ファイルの先頭部分はこのように書く。
+(1) 最初の joint の定義、joint毎に固有の名前を付ける。
+    joint の種類は、この場合は fixed を指定する。
+(2) 親リンクとして原点にあり実体がない base_link を指定している。
+    子リンクとしてロボットの本体となる body を指定している。
+(3) 初期座標として(1, 1, 1) を指定している。 ロール、ピッチ、ヨーは 0
+(4) body に対応する link の定義、固有の名前を付ける。
+(5) このタグはリンクの見た目を表す。
+(6) 表示の原点はデフォルトの値、ロール、ピッチ、ヨーは 0
+(7) 直方体のサイズ、X:0.8m, Y:0.4m, Z:0.6m の大きさ
+(8) 衝突の計算に関する指定、内容は visual と同じでよい。
+(9) 慣性の計算に関する指定、内容は visual と同じでよい。
+(10) mass はリンクの質量を表す。単位は kg
+(11) 慣性の計算に関するパラメータ、正確に求めない場合はこの程度の値でよい。
+     1e-1 -- 1e-3 程度にする。
+
+<!-- ################################################################### -->
+
+中略
+
+<!-- ################################################################### -->
+
+    <joint name="jointy" type="revolute">　　　　　　　　　　　　　(12)
+       <parent link="body"/>                                       (13)
+	<child link="linky"/> 	      	      	                   (13)
+	<origin xyz= "0 0.2 0.3" rpy="0 0 0" />                    (14)
+	<axis xyz="0 1 0"/>                                        (15)
+	<limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>  (16)
+    </joint>
+
+    <link name="linky">                                            (17)
+        <visual>
+	    <origin xyz="0 0.4 0" rpy="0 0 0"/>                    (18)
+	    <geometry> <box size="0.1 0.8 0.1"/> </geometry>       (19)
+	</visual>
+	<collision>                                                (20)
+	    <origin xyz="0 0.4 0" rpy="0 0 0"/>
+	    <geometry> <box size="0.1 0.8 0.1"/> </geometry>
+	</collision>
+	<inertial>                                                 (20)
+	    <origin xyz="0 0.4 0" rpy="0 0 0"/> <mass value="0.1"/>
+	    <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+	</inertial>
+    </link>
+
+(12) body に接続する joint の定義、固有の名前は jointy とした。
+     revolute はある角度の範囲で回転する関節のような動きを指定する。
+(13) 親リンクは body
+(13) 子リンクは linky
+(14) joint の座標を (0 0.2 0.3) に設定する。body の原点(重心)からの移動量
+     を表す。この点の位置が子リンクの原点になる。よって子リンクの原点は重心では
+     なくなる。
+(15) 回転軸を指定する、この場合はY軸の周りを回転する。(1 0 0)ならX軸になる。
+(16) モータのトルク 30, 回転の上限下限角度±2.617、速度は1.571、単位はラディアン
+(17) リンク linky の定義
+(18) 表示の原点の定義、(0 0 0)にすると重心が原点の位置に来る。リンクが重ならないように
+     Y軸方向に下記長さの半分の距離 0.4 離している。
+(19) このリンクの大きさ、Y軸方向に長い棒状のリンクになる。
+(20) 衝突、慣性のパラメータは visual と同じでよい。
+
+<!-- ################################################################### -->
+
+    <transmission name="transy">　　　　　　　　　　　　　　　　　　(21)
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="jointy">                                         (22)
+	<hardwareInterface>hardware_interface/EffortJointInterface
+	</hardwareInterface>                                        (23)
+      </joint>
+      <actuator name="motory">                                      (24)
+	<hardwareInterface>EffortJointInterface</hardwareInterface>
+	<mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+(21) Gazebo を ROS を接続するためのモータのインタフェースの定義、固有の
+　　　名前を付ける。
+(22) 対象とするリンク jointy を指定する。
+(23) kinetic と indigo で指定する名前が異なるので注意する。これは kinetic 用。
+(24) モータに固有の名前を付ける。
+
+### yaml ファイルの記述
+
+yaml ファイルには、ROSのプログラムによるモータの動きの
+制御と、Gazebo上のモデルの joint との対応関係を記述する。
+ジョイント１個につき、yaml ファイルのエントリ（記述）が１組必要になる。
+以下に yaml ファイル (config/er14000w.yaml) の記述例を示す。
+
+ri4:                                                    (1)
+# Publish all joint states --------------------------   (2)
+  joint_state_controller:                               (3)
+    type: joint_state_controller/JointStateController
+    publish_rate: 50                                    (4)
+
+# Position Controllers ------------------------------
+  joint1_position_controller:                           (5)
+    type: effort_controllers/JointPositionController
+    joint: joint1                                       (6)
+    pid: {p: 100.0, i: 0.01, d: 10.0}                   (7)
+
+(1) 最初にプロジェクト名（ロボット名）を書く。この文書の最初の方で
+　　複数の設定ファイルに記述する名前の関係を示したが、ここに書く名前は
+　　他の場所にも記述するので、ここだけ適当に決めることはできない。
+(2) コメントはこのように書く。
+(3) joint_state_controller に関するここから３行の記述は、モータ
+　（ジョイント）数に関わらず、必ず１回書く。
+(4) モータの状態を publish する頻度を指定する、この場合は５０回/秒
+(5) joint_position_controller に関するここから4行の記述は、モータ
+　　１個につき、１組ずつ書く。名前はモータ毎に異なる名前を付ける。
+　　このコントローラは、対象のモータが joint1 なので、名前に joint1
+　　を含めた。
+(6) URDF で定義した motor の名前 joint1 を指定する。URDF, yaml ファイルで
+　　同じ名前を指定することで、対応関係を示すことになる。
+(7) PID 制御のゲインを指定する。変更するとモータの挙動が変わる。
+
+
+launch ファイルの記述
++++++++++++++++++++++++++++++++++++++++++++
+
+launch ファイルは rviz や gazebo の実行時に必要となるパラメータの設定や
+関連するプログラムをまとめて起動するための仕組み roslaunch 用の
+設定ファイルである。多くの部分はサンプルの記述内容を真似して書けばよい。
+以下ではサンプルファイル (launch/er14000w_gz.launch) の内容を示す。
+
+::
+
+   <launch>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="true"/>                            (1)
+    </include>
+    
+    <arg name="model" default="$(find ri4)/urdf/er14000w.urdf" />    (2)
+    <param name="robot_description" textfile="$(arg model)" />
+
+    <arg name="gui" default="True" />
+    <param name="use_gui" value="$(arg gui)" />
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher"
+          type="robot_state_publisher" />
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+          args="-param robot_description -urdf -model ri4" />         (3)
+
+    <rosparam file="$(find ri4)/config/er14000w.yaml" command="load" />   (4)
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+          output="screen" ns="/ri4"                                   (5)
+          args="joint_state_controller joint1_position_controller joint2_position_controller
+	        joint3_position_controller jointx_position_controller
+		jointy_position_controller" />                        (6)
+   </launch>
+
+1. true を false に変更すると、gazebo を起動した直後に動き始める。
+2. ロボット名 ri4, プログラム名 er14000w が含まれるので、それらの名前を変更した場合は
+   書き替えが必要になる。この行は参照する URDF ファイルのの指定。
+3. ロボット名 ri4 が含まれるので、名前の変更時は注意、書き換えが必要。
+4. yaml ファイルの指定、名前の変更時は注意、書き換えが必要。
+5. ネームスペースの指定、ここも名前の変更時は注意、書き換えが必要。
+6. ROS のプログラムで記述した joint_state_controller, position_controller の指定。
+   空白で区切って複数指定可能、関節が５個あるので position_controller を５個起動する。
+   それぞれの名前は、yaml, URDF, cpp プログラムに現れるので、矛盾しないようにする。
+
+### 関節を動かすプログラムの説明
+
+各関節をどのように動かすかは、C++のプログラム (src/er14000w.cpp)
+で決めている。以下ではそのプログラムがどのように動作するか説明する。
+このプログラムは、通常のプログラムのように main() の中の処理を一通り
+実行して終了するものではなく、イベントドリブンのループ処理と、
+タイマー割り込みによる関数の起動が組み合わされているので、実行中に
+どの部分の処理が行われるか注意して見る、理解する必要がある。
+
+const int NUMPARAM = 10; // param[] の配列の要素数
+const int J1 = 1; // id number of joint 1, 各ジョイントにID番号を付ける
+const int J2 = 2;                                     (1)
+const int J3 = 3;
+const int J4 = 4;
+const int J5 = 5; // id number of joint 5
+
+class Control                                         (2)
+{
+public:
+  Control(char *name, int id, float param[NUMPARAM]);
+  ~Control();
+  void timerCallback(const ros::TimerEvent&);         (3)
+private:
+  int id;                                             (4)
+  int timing;                                         (5)
+  float angle1; // 回転角度の限界値１                 (6)
+  float angle2; // 回転角度の限界値２
+  float targetangle; // その時々の目標角度を記憶
+  int cycle; // 動きを切り替える周期を関節毎に個別に指定できる
+  ros::Publisher c_pub;                               (7)
+  ros::Subscriber p_sub;                              (8)
+  ros::Timer timer;                                   (9)
+  ros::NodeHandle nh;
+};
+
+Control::Control(char *name, int idnum, float param[NUMPARAM]) (10)
+{
+  c_pub = nh.advertise<std_msgs::Float64>(name, 1000); (11)
+
+// 0.1sec 毎にtimerCallback() が呼び出されるように登録する  
+  timer = nh.createTimer(ros::Duration(0.1), &Control::timerCallback, this); (12)
+
+  id = idnum; // 渡された値を変数id にセットする      (13)
+  timing = 0;
+  angle1 = param[0]; // 渡されたparam[]を各変数にセットする
+  angle2 = param[1];
+  targetangle = angle1; // 最初の目標角度は angle1
+  cycle  = (int)param[2];
+}
+
+void Control::timerCallback(const ros::TimerEvent&)   (14)
+{
+    std_msgs::Float64 pos;
+    
+// ros_Duration が 0.1 なので、(0.1 * cycle) 秒ごとに目標角度が入れ替わる
+    if (cycle == timing) { // 目標角度の切り替え
+        timing = 0;
+	if (angle1 == targetangle) targetangle = angle2;
+	else                       targetangle = angle1;
+    }
+    timing++;
+    pos.data = targetangle;                           (15)
+
+// 以下は、新たに加えた部分、上記の目標角度の入れ替え以外に各関節に
+// 固有の特別な処理をしたい場合はここに書ける。
+    switch (id) {                                     (16)
+    case J1:
+//    nothing;
+      break;
+//  以下略
+    }
+
+    c_pub.publish(pos);                               (17)
+}
+
+int main(int argc, char **argv)
+{
+// 今までは目標角度の値を１個しか指定できなかったが、他の値も渡せるように
+// 配列にした。
+  float param[NUMPARAM];
+  
+  ros::init(argc, argv, "joint_controller");
+
+// ジョイントのID番号を引数で渡せるようにした。
+  
+// joint 毎に専用のコントローラを起動する
+// 各コントローラに固有のパラメータを渡したいときは、param[] 経由で渡す
+// 例として、param[0]は角度１、param[1]は角度２、param[2]は周期としてみた。
+// これらの値を書き換えてみると動きが変化するのが見られるはず
+  param[0] = M_PI/6.0;                                (18)
+  param[1] = -M_PI/6.0;
+  param[2] = 30;
+  Control Control1((char*)"/ri4/joint1_position_controller/command", J1, param); (19)
+  
+// 中略
+
+  ros::spin();                                        (20)
+
+  return 0;
+}
+
+(1) モータそれぞれに通し番号のIDを割り振る。ここでは5個のモータを使う。
+(2) Control 型のクラスの定義、このクラスがモータ制御の機能を持つ
+　　モータ１個につき、このクラスのインスタンスを1個生成する。
+(3) timerCallback() がモータ制御の実体。タイマーにより一定の時間間隔で
+　　起動され、その都度目標角度を指定、publish する。
+(4) モータのID
+(5) 目標角度を切り替えるタイミングを調整する変数
+(6) ここからの数行はモータ毎に目標角度などを記憶しておく変数
+(7) 目標角度を指示する publisher
+(8) モータの現在の状態を読み取る subscriber、今は登録しておらず、使っていない。
+(9) timerCallback() を周期的に呼び出すためのタイマー機能
+(10) コンストラクタ、初期化時に目標角度などを変数に記憶する。
+(11) 目標角度を指示する publisher の登録
+(12) タイマーを指定して一定の時間間隔で timerCallback() を呼び出すように登録する。
+　　　時間間隔はここで指定可能。
+(13) ここからの数行でコンストラクタの引数として渡された目標角度などをメンバ変数に
+　　記憶する。
+(14) timerCallback() の定義、この内容を変更するとモータの動き方を変えられる。 
+(15) 目標角度を publish 用の変数に代入する。
+(16) モータの個体を区別する id により、固有の処理を定義できる。
+　　すべてのモータで同じ関数 timerCallback() が呼び出されるが、ここでモータ毎に
+　　異なる処理が実現できる。
+(17) 目標角度を gazebo に向けて publish する。
+(18) ここから3行でモータ毎に目標角度の上限下限、目標角度を切り替える周期を指定する。
+(19) クラス Control のインスタンスを生成する。モータ1個につきインスタンスが1個必要。
+　　これは ID 1 用のインスタンス、コントローラになる。最初の引数は名前で、
+　　yaml ファイルの記述と名前を合わせる必要がある。このコントローラは URDF ファイル
+　　中で定義した joint1 用となる。
+(20) コントローラのインスタンスを一通り生成したら、最後は ROS のイベントループに制御を渡す。
+　　この後は一定周期で各モータ用のtimerCallback() が呼び出され、モータの目標角度を
+　　指定していく。
+
+
+### 課題
+
+(1) Gazebo でサンプルファイルのモデルが動作することを確認する。
+(2) body の重さは当初 20kg となっているが、10kg, 5kg に変更した時のロボットの
+    挙動の変化を調べる。 <mass value="20"/>を変更する。
+(3) jointy に関して、リンクの原点の位置、リンクの長さ、回転軸の方向を変更して
+　　構造や動きがどのように変化するか調べる。
+(4) 図 ri4_gazebo2.png に示すように、本体左後部に新しいリンク、ジョイントを
+    追加してそれを動かしてみる。回転軸をX, Y, Z 各軸に指定した時の動きを調べる。
+
+--------------------------
+
+(5) N 足ロボットのモデルを作成して、5m 歩行させる。
+
+(5) については、実現したい機能を箇条書きの項目で書き表し、必要な機能を
+各設定ファイルとプログラムで記述する。
+個々のファイル名は各自の学籍番号から er1????w.??? とする。
+
+この文書を読んでわからないことがある場合は質問する。
+リンクを接続するジョイントの座標をどのように求めたらよいか、パッケージに付属の
+jointlinkman.txt, jointlinkman.pdf にも説明があるので参考にする。
+
+
+### 結果の評価
+
+・新しいリンクやジョイントを追加して、破綻なくロボットのモデルを構成できたか。
+・新しいリンクやジョイントをプログラムから、意図したように動かせるか。
+・N 足ロボットのモデルを作成できたか。
+・N 足ロボットのモデルを歩行させられたか。
+・5m 歩行することができたか。
+
+### レポートについて
+
+(1)--(4) については結果が分かるようなキャプチャ画像を含めたレポートを作成する。
+ファイル名を「学籍番号_10.pdf」(例 er18099_10.pdf)とする。
+レポートのPDFファイルを指定された方法、場所に提出する。
+提出期限は 202? 年 ?? 月 ?? 日 23:59。
+
+--------------------------
+
+(5) については
+
+・実現しようとした機能を箇条書きで表す。
+・「自分が書いた部分」のソースリストや設定ファイル
+・歩行のプログラムの説明、内容がわかるように説明や図を書く。
+・ロボットの構造がわかる図、キャプチャ画面、動画
+・結果についての考察、感想
+
+を含むように、なんらかの文書作成ソフトを使用して作成し、PDFファイルを作成する。
+ファイル名は er1????w.pdf とする。
+
+レポートのPDFファイル１個、作成したプログラムやファイルがあればそれらをまとめて 
+Tora-Net のライブラリ、ロボットインテリジェンスの共通教材のページから提出する。
+提出期限は 202? 年 ? 月 ? 日 23:59。
+
+
+### 画面の録画、編集について
+
+Ubuntu 用の録画、編集が可能なソフトウェアとしては、例えば
+以下のものがある。
+
+画面を動画として録画、保存するソフトウェア
+SimpleScreenRecorder
+https://gihyo.jp/admin/serial/01/ubuntu-recipe/0316
+
+録画した動画のファイルを編集するソフトウェア
+VidCutter
+https://ubuntuapps.net/blog-entry-923.html
+
+※ VidCutter は最後のファイル保存が終わらない問題が手元では
+見られたが、少し待てばファイルはできていたので強制終了しても
+問題はなさそう。
+
+### 既知のバグ、未実装の機能
+
+・ジョイントの回転を指示するプログラムが画一的で機能が限られている。
+　今後、拡張が必要。
+・機械学習で歩行に必要な動きを獲得できるようにしたい。
+
+### その他、トラブルシューティング、FAQ
+
+gazebo の画面が出る前に警告が出たり、時間がかなりかかる場合がある。
+おかしそうな場合でもしばらく待つと画面が出ることがある。
+ただしあまりに時間がかかる場合は何かの設定がおかしい場合がある。
+赤色のメッセージが出る場合はダメな場合が多い。
+
+設定やプログラムに間違いがない場合でも、gazebo は起動に失敗すること
+がある。２回失敗して３回目に成功する場合もあるので、自分が書いた内容に
+問題がないと思われる場合は、何回か起動を試してみるとよい。
+
+gazebo を終了する時に、終了ボタンや Ctrl-C を押してもしばらくプロンプト
+が戻ってこないことがある。ジョイント制御のプログラムとの通信を切断するのに
+時間がかかるせいである。Ctrl-C を２，３回押すとよい。
+
+/var/.../.../.../lock の問題でアップデートやインストールができない
+場合は、以下のように lock ファイルを削除すると直る。
+% cd /var/.../.../...
+% sudo rm lock
+
+gazebo で関節を動かしている状態で、rviz を起動すると一部が白くなる、
+関節を動かすスライダが出ない、などの問題が発生した。
+起動の順番を逆にするとおかしな挙動にはならない。
+
+rosrun ri4 er14000w の代わりに次のコマンドを実行すると関節を動かせる。
+% rostopic pub /arm/joint1_position_controller/command std_msgs/Float64 "data: 1.0"
+最後の 1.0 を -1.0, 0.5, 1.57 などに変えると回転角が変わる。
+
+URDF のジョイントの定義が間違っている(例えば名前が重複しているなど)と、
+rviz で一部が白くなることがある。
+gazebo ではjoint が floating の場合は表示されることがあった。
+revolute にすると表示されなかった。また表示されても地面に沈んでいくことがあった。
+いずれもおかしな挙動を示した場合は、URDF の間違いがないか確認する。
+
+ubuntu14.04, indigo の組み合わせで、rviz が縞々になったり、gazebo が
+表示されないということがあった。原因、対処法は今のところ不明。
+
+Python の開発環境で Anaconda を使っている場合、gazebo の実行に影響して
+正常に動作しない現象が観察されたので、関係する設定を一時的にコメントアウト
+する必要がある。具体的には以下のような記述が .bashrc にある場合が該当する。
+# added by Anaconda3 5.3.0 installer
+# >>> conda init >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$(CONDA_REPORT_ERRORS=false '/home/miwa/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    \eval "$__conda_setup"
+else
+    if [ -f "/home/miwa/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/miwa/anaconda3/etc/profile.d/conda.sh"
+        CONDA_CHANGEPS1=false conda activate base
+    else
+        \export PATH="/home/miwa/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda init <<<
+
+Ubuntu18.04, ROS melodic で動作を確認したところ、launch ファイルの 
+rviz, gazevo 関連で以下の警告が出た。
+The 'state_publisher' executable is deprecated. Please use 'robot_state_publisher' instead
+これは次のファイルで、
+er14000w_rv.launch
+er14000w_gz.launch
+次の記述を
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+以下に変更することで解決できた。
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+他にも若干警告が出ているが、動作には影響していないようだ。
+
+慣性の影響で物体が時間経過に伴って弾んだり、滑り出す現象について
+<inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/> <mass value="20"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
+</inertial>
+ixx などの値を 1 など大きな値にすると徐々に弾むようになった。
+値を 1e-3 など小さな値にするとすぐに滑るようになった。
+1e-1 -- 1e-2 程度にすると比較的安定する。
+
+ROS noetic の rviz でスライダが自動で表示されなくなった現象について
+以下にあるとおり、urdf, launch のどちらかで 'use_gui' がなくなったせいのようだ。
+[WARN] [1606815234.049128]: The 'use_gui' parameter was specified,
+which is deprecated.  We'll attempt to find and run the GUI,
+but if this fails you should install the 'joint_state_publisher_gui'
+package instead and run that.
+This backwards compatibility option will be removed in Noetic.

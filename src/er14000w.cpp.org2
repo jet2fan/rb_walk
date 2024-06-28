@@ -1,0 +1,136 @@
+#include "ros/ros.h"
+#include "std_msgs/Float64.h"
+
+const int NUMPARAM = 10; // param[] の配列の要素数
+const int J1 = 1; // id number of joint 1, 各ジョイントにID番号を付ける
+const int J2 = 2;
+const int J3 = 3;
+const int J4 = 4;
+const int J5 = 5; // id number of joint 5
+
+class Control
+{
+public:
+  Control(char *name, int id, float param[NUMPARAM]);
+  ~Control();
+  void timerCallback(const ros::TimerEvent&);
+private:
+  int id;
+  int timing;
+  float angle1; // 回転角度の限界値１
+  float angle2; // 回転角度の限界値２
+  float targetangle; // その時々の目標角度を記憶
+  int cycle; // 動きを切り替える周期を関節毎に個別に指定できるようにした
+  ros::Publisher c_pub;
+  ros::Subscriber p_sub;
+  ros::Timer timer;
+  ros::NodeHandle nh;
+};
+
+Control::Control(char *name, int idnum, float param[NUMPARAM])
+{
+  c_pub = nh.advertise<std_msgs::Float64>(name, 1000);
+
+// 0.1sec 毎にtimerCallback() が呼び出されるように登録する  
+  timer = nh.createTimer(ros::Duration(0.1), &Control::timerCallback, this);
+
+  id = idnum; // 渡された値を変数id にセットする
+  timing = 0;
+  angle1 = param[0]; // 渡されたparam[]を各変数にセットする
+  angle2 = param[1];
+  targetangle = angle1; // 最初の目標角度は angle1
+  cycle  = (int)param[2];
+}
+
+Control::~Control()
+{
+// Nothing now.
+}
+
+void Control::timerCallback(const ros::TimerEvent&)
+{
+    std_msgs::Float64 pos;
+    
+// ros_Duration が 0.1 なので、(0.1 * cycle) 秒ごとに目標角度が入れ替わる
+
+    if (cycle == timing) {
+        timing = 0;
+	if (angle1 == targetangle) targetangle = angle2;
+	else                       targetangle = angle1;
+//	printf("%d:%f ", id, targetangle);
+//	if (J5 == id) {printf("\n"); fflush(stdout);}
+    }
+    timing++;
+    pos.data = targetangle;
+
+// 以下は、新たに加えた部分
+// 上記の目標角度の入れ替え以外に各関節に固有の特別な処理をしたい
+// 場合はここに書ける。
+  
+    switch (id) {
+    case J1:
+//    nothing;
+      break;
+    case J2:
+//    nothing;
+      break;
+    case J3:
+//    if (10 < cycle) cycle--;
+      break;
+    case J4:
+//    nothing;
+      break;
+    case J5:
+//    nothing;
+      break;
+    default:
+//    nothing;
+      break;
+    }
+
+    c_pub.publish(pos);
+}
+
+int main(int argc, char **argv)
+{
+// 今までは目標角度の値を１個しか指定できなかったが、他の値も渡せるように
+// 配列にした。
+  float param[NUMPARAM];
+  
+  ros::init(argc, argv, "joint_controller");
+
+// ジョイントのID番号を引数で渡せるようにした。
+  
+// joint 毎に専用のコントローラを起動する
+// 各コントローラに固有のパラメータを渡したいときは、param[] 経由で渡す
+// 例として、param[0]は角度１、param[1]は角度２、param[2]は周期としてみた。
+// これらの値を書き換えてみると動きが変化するのが見られるはず
+  param[0] = M_PI/6.0;
+  param[1] = -M_PI/6.0;
+  param[2] = 30;
+  Control Control1((char*)"/ri4/joint1_position_controller/command", J1, param);
+  
+  param[0] = M_PI/6.0;
+  param[1] = -M_PI/6.0;
+  param[2] = 30;
+  Control Control2((char*)"/ri4/joint2_position_controller/command", J2, param);
+
+  param[0] = M_PI;
+  param[1] = -M_PI;
+  param[2] = 30;
+  Control Control3((char*)"/ri4/joint3_position_controller/command", J3, param);
+
+  param[0] = M_PI;
+  param[1] = -M_PI;
+  param[2] = 30;
+  Control Controlx((char*)"/ri4/jointx_position_controller/command", J4, param);
+
+  param[0] = M_PI;
+  param[1] = -M_PI;
+  param[2] = 30;
+  Control Controly((char*)"/ri4/jointy_position_controller/command", J5, param);
+
+  ros::spin();
+
+  return 0;
+}

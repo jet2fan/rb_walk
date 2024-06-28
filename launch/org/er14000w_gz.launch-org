@@ -1,0 +1,23 @@
+<launch>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="true"/>
+    </include>
+    
+    <arg name="model" default="$(find ri4)/urdf/er14000w.urdf" />
+    <param name="robot_description" textfile="$(arg model)" />
+
+    <arg name="gui" default="True" />
+    <param name="use_gui" value="$(arg gui)" />
+
+    <node name="robot_state_publisher_gz" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node name="spawn_urdf_gz" pkg="gazebo_ros" type="spawn_model"
+    	  args="-param robot_description -urdf -model ri4" />
+
+    <rosparam file="$(find ri4)/config/er14000w.yaml" command="load" />
+
+    <node name="controller_spawner_gz" pkg="controller_manager" type="spawner"
+    	  respawn="false" output="screen" ns="/ri4"
+          args="joint_state_controller joint1_position_controller joint2_position_controller 
+	        joint3_position_controller jointx_position_controller jointy_position_controller" />
+
+</launch>
