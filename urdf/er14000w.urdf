@@ -1,11 +1,20 @@
 <?xml version="1.0"?>
 
 <robot name="ri4">
-    <gazebo>
-      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-	<robotNamespace>ri4</robotNamespace>
-      </plugin>
-    </gazebo>
+  <material name="red">
+    <color rgba="1.0 0.0 0.0 2.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 1.0 0.0 2.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.0 0.0 1.0 2.0"/>
+  </material>
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+	    <robotNamespace>ri4</robotNamespace>
+    </plugin>
+  </gazebo>
 
 <!-- ################################################################### -->
 
@@ -14,30 +23,34 @@
 <!-- ################################################################### -->
 
     <joint name="joint0" type="fixed">
-        <parent link="base_link"/>
-	<child link="body"/>
-	<origin xyz= "1 1 1" rpy="0 0 0" />
+      <parent link="base_link"/>
+      <child link="body"/>
+      <origin xyz= "1 1 1" rpy="0 0 0" />
     </joint>
 
     <link name="body">
-        <visual>
-	    <origin xyz="0 0 0" rpy="0 0 0"/>
-	    <geometry> <box size="0.8 0.4 0.6"/> </geometry>
-	</visual>
-	<collision>
-	    <origin xyz="0 0 0" rpy="0 0 0"/>
-	    <geometry> <box size="0.8 0.4 0.6"/> </geometry>
-	</collision>
-	<inertial>
-	    <origin xyz="0 0 0" rpy="0 0 0"/> <mass value="20"/>
-	    <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
-	</inertial>
+      <visual>
+        <!-- origin xyz="0 0 0" rpy="0 0 0"/ -->
+        <!-- geometry> <box size="0.8 0.4 0.6"/> </geometry -->
+        <origin xyz="0 0 0.25" rpy="0 0 0"/>
+        <geometry> <box size="0.2 0.1 0.5"/> </geometry>
+        <material name="red"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry> <box size="0.2 0.1 0.5"/> <!-- box size="0.8 0.4 0.6"/ --> </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/> 
+        <mass value="20"/>
+        <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
+      </inertial>
     </link>
 
 <!-- ################################################################### -->
 
     <joint name="joint1" type="revolute">
-        <parent link="body"/>
+       <parent link="body"/>
 	<child link="link1"/>
 	<origin xyz= "0 0 0.3" rpy="0 0 0" />
 	<axis xyz="0 1 0"/>
