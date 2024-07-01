@@ -53,15 +53,15 @@
 
 <!-- kokokara migiasi -->
 <!-- migi kokansetu -->
-    <joint name="joint1" type="revolute">
-      <parent link="body"/>
-      <child link="link1"/>
-      <!-- origin xyz= "0 0 0.3" rpy="0 0 0" />
-      <axis xyz="0 1 0"/ -->
-      <origin xyz="0.1 0 0.0" rpy="0 0 0"/>
-      <axis xyz="0 1 0"/>
-      <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
-    </joint>
+  <joint name="joint1" type="revolute">
+     <parent link="body"/>
+     <child link="link1"/>
+     <!-- origin xyz= "0 0 0.3" rpy="0 0 0" />
+     <axis xyz="0 1 0"/ -->
+     <origin xyz="0.1 0 0.0" rpy="0 0 0"/>
+     <axis xyz="0 1 0"/>
+     <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+   </joint>
 <!-- ue sokeibu -->
     <link name="link1">
       <visual>
@@ -78,7 +78,8 @@
         <origin xyz="0.1 0 -0.05" rpy="0 0 0"/>
       </collision>
       <inertial>
-        <origin xyz="0.1 0 -0.05" rpy="0 0 0"/> <!-- origin xyz="0 0 0.25" rpy="0 0 0"/ --> <mass value="0.1"/>
+        <origin xyz="0.1 0 -0.05" rpy="0 0 0"/> <!-- origin xyz="0 0 0.25" rpy="0 0 0"/ --> 
+        <mass value="0.1"/>
         <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
       </inertial>
     </link>
@@ -93,14 +94,14 @@
 
 <!-- ################################################################### -->
 <!-- migi kokansetu -->
-    <joint name="joint2" type="revolute">
+  <joint name="joint2" type="revolute">
      <parent link="link1"/>
      <child link="link2"/>
      <!-- origin xyz= "0 0 0.5" rpy="0 0 0" / -->
      <origin xyz="0.1 0 -0.1" rpy="0 0 0"/>
      <axis xyz="1 0 0"/>
      <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
-    </joint>
+  </joint>
 
 <!-- migi futomomo -->
     <link name="link2">
@@ -117,7 +118,8 @@
         <geometry> <box size="0.1 0.02 0.4"/> </geometry>
       </collision>
       <inertial>
-        <origin xyz="0 0 -0.2" rpy="0 0 0"/> <!-- origin xyz="0 0 0.25" rpy="0 0 0"/ --> <mass value="0.1"/>
+        <origin xyz="0 0 -0.2" rpy="0 0 0"/> <!-- origin xyz="0 0 0.25" rpy="0 0 0"/ --> 
+        <mass value="0.1"/>
         <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/> 
       </inertial>
     </link>
@@ -133,40 +135,57 @@
     </transmission>
 
 <!-- ################################################################### -->
+<!-- migi hiza -->
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <!-- origin xyz= "0 0 0.5" rpy="0 0 0" / -->
+    <origin xyz="0 0 -0.4" rpy="0 0 3.1415"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+  </joint>
 
-    <joint name="joint3" type="revolute">
-        <parent link="link2"/>
-	<child link="link3"/>
-	<origin xyz= "0 0 0.5" rpy="0 0 0" />
-	<axis xyz="0 0 1"/>
-	<limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+<!-- migi sune -->
+  <link name="link3">
+    <visual>
+      <!-- origin xyz="0 0 0.2" rpy="0 0 0"/>
+      <geometry> <box size="0.6 0.1 0.4"/> </geometry -->
+      <geometry> <box size="0.1 0.01 0.4"/> </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <!-- origin xyz="0 0 0.2" rpy="0 0 0"/>
+      <geometry> <box size="0.6 0.1 0.4"/> </geometry -->
+      <geometry> <box size="0.1 0.01 0.4"/> </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/> <!-- origin xyz="0 0 0.2" rpy="0 0 0"/ --> 
+      <mass value="0.1"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
+    </inertial>
+  </link>
+  <!-- transmission name="trans3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-
-    <link name="link3">
-        <visual>
-	    <origin xyz="0 0 0.2" rpy="0 0 0"/>
-	    <geometry> <box size="0.6 0.1 0.4"/> </geometry>
-	</visual>
-	<collision>
-	    <origin xyz="0 0 0.2" rpy="0 0 0"/>
-	    <geometry> <box size="0.6 0.1 0.4"/> </geometry>
-	</collision>
-	<inertial>
-	    <origin xyz="0 0 0.2" rpy="0 0 0"/> <mass value="0.1"/>
-	    <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
-	</inertial>
-    </link>
-
-    <transmission name="trans3">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="joint3">
-	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="motor3">
-	<hardwareInterface>EffortJointInterface</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+    <actuator name="motor3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission -->
+  <transmission name="trans3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint3">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 <!-- ################################################################### -->
 
@@ -188,7 +207,8 @@
 	    <geometry> <box size="0.4 0.1 0.1"/> </geometry>
 	</collision>
 	<inertial>
-	    <origin xyz="0.2 0 0" rpy="0 0 0"/> <mass value="0.1"/>
+	    <origin xyz="0.2 0 0" rpy="0 0 0"/> 
+      <mass value="0.1"/>
 	    <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
 	</inertial>
     </link>
@@ -222,7 +242,8 @@
 	    <geometry> <box size="0.1 0.1 0.4"/> </geometry>
 	</collision>
 	<inertial>
-	    <origin xyz="0 0 -0.2" rpy="0 0 0"/> <mass value="0.1"/>
+	    <origin xyz="0 0 -0.2" rpy="0 0 0"/> 
+      <mass value="0.1"/>
 	    <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
 	</inertial>
     </link>
@@ -247,7 +268,8 @@
 	    <geometry> <box size="0.1 0.8 0.1"/> </geometry>
 	</collision>
 	<inertial>
-	    <origin xyz="0 0.4 0" rpy="0 0 0"/> <mass value="0.1"/>
+	    <origin xyz="0 0.4 0" rpy="0 0 0"/> 
+      <mass value="0.1"/>
 	    <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
 	</inertial>
     </link>

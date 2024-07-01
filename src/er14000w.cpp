@@ -197,8 +197,8 @@ int main(int argc, char **argv)
   param[2] = 30;
   Control Control2((char*)"/ri4/joint2_position_controller/command", J2, param);
 
-  param[0] = M_PI; // 180 度、ただし urdf ファイルで最大 150 度(2.617rad)に制限されている
-  param[1] = -M_PI;
+  param[0] = M_PI/2.0; // 180 度、ただし urdf ファイルで最大 150 度(2.617rad)に制限されている
+  param[1] = -M_PI/6.0;
   param[2] = 30;
   Control Control3((char*)"/ri4/joint3_position_controller/command", J3, param);
 
