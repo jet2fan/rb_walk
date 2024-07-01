@@ -264,40 +264,48 @@
   </link>
 
 <!-- ################################################################### -->
+<!-- hidariasi sokeibu ue -->
 
-    <joint name="jointy" type="revolute">
-        <parent link="body"/>
-	<child link="linky"/>
-	<origin xyz= "0 0.2 0.3" rpy="0 0 0" />
-	<axis xyz="0 1 0"/>
-	<limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
-    </joint>
+  <joint name="jointy" type="revolute">
+    <parent link="body"/>
+    <child link="linky"/>
+    <!-- origin xyz= "0 0.2 0.3" rpy="0 0 0" / -->
+    <origin xyz="-0.1 0 0.0" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+  </joint>
 
-    <link name="linky">
-        <visual>
-	    <origin xyz="0 0.4 0" rpy="0 0 0"/>
-	    <geometry> <box size="0.1 0.8 0.1"/> </geometry>
-	</visual>
-	<collision>
-	    <origin xyz="0 0.4 0" rpy="0 0 0"/>
-	    <geometry> <box size="0.1 0.8 0.1"/> </geometry>
-	</collision>
-	<inertial>
-	    <origin xyz="0 0.4 0" rpy="0 0 0"/> 
+<!-- hidari sokeibu -->
+  <link name="linky">
+    <visual>
+      <!-- origin xyz="0 0.4 0" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.8 0.1"/> </geometry -->
+      <geometry> <box size="0.2 0.05 0.1"/> </geometry>
+      <origin xyz="-0.1 0 -0.05" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <!-- origin xyz="0 0.4 0" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.8 0.1"/> </geometry -->
+      <geometry> <box size="0.2 0.05 0.1"/> </geometry>
+      <origin xyz="-0.1 0 -0.05" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <!-- origin xyz="0 0.4 0" rpy="0 0 0"/ -->
+      <origin xyz="-0.1 0 -0.05" rpy="0 0 0"/>
       <mass value="0.1"/>
-	    <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
-	</inertial>
-    </link>
-
-    <transmission name="transy">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="jointy">
-	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="motory">
-	<hardwareInterface>EffortJointInterface</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
+    </inertial>
+  </link>
+  <transmission name="transy">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="jointy">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motory">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 </robot>
