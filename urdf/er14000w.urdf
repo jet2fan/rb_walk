@@ -43,6 +43,7 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
+  <gazebo reference="body1"> <material>Gazebo/Red</material> </gazebo> 
 
 <!-- ################################################################### -->
 <!-- kokokara migi asi -->
@@ -71,6 +72,7 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
+  <gazebo reference="body2"> <material>Gazebo/Blue</material> </gazebo> 
   <transmission name="trans1">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="joint1"> <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface> </joint>
@@ -91,32 +93,33 @@
   </joint>
 
 <!-- migi futomomo -->
-   <link name="body3">
-     <visual>
-       <geometry> <box size="0.1 0.02 0.4"/> </geometry>
-       <origin xyz="0 0 -0.2" rpy="0 0 0"/>
-       <material name="green"/>
-     </visual>
-     <collision>
-       <origin xyz="0 0 -0.2" rpy="0 0 0"/>
-       <geometry> <box size="0.1 0.02 0.4"/> </geometry>
-     </collision>
-     <inertial>
-       <origin xyz="0 0 -0.2" rpy="0 0 0"/>  
-       <mass value="0.1"/>
-       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/> 
-     </inertial>
-   </link>
-   <transmission name="trans2">
-     <type>transmission_interface/SimpleTransmission</type>
-     <joint name="joint2">
-       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-     </joint>
-     <actuator name="motor2">
-       <hardwareInterface>EffortJointInterface</hardwareInterface>
-       <mechanicalReduction>1</mechanicalReduction>
-     </actuator>
-   </transmission>
+  <link name="body3">
+    <visual>
+      <geometry> <box size="0.1 0.02 0.4"/> </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.02 0.4"/> </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>  
+      <mass value="0.1"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/> 
+    </inertial>
+  </link>
+  <gazebo reference="body3"> <material>Gazebo/Green</material> </gazebo> 
+  <transmission name="trans2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 <!-- ################################################################### -->
 <!-- migi hiza -->
@@ -145,6 +148,7 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
+  <gazebo reference="body4"> <material>Gazebo/Red</material> </gazebo> 
   <transmission name="trans3">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="joint3">
@@ -158,7 +162,7 @@
 
 <!-- ################################################################### -->
 <!-- migi kurubusi kansetu -->
-  <joint name="jointx" type="revolute">
+  <joint name="joint4" type="revolute">
     <parent link="body4"/>
     <child link="body5"/>
     <origin xyz="0 0 -0.4" rpy="0 0 3.1415926"/>
@@ -172,22 +176,23 @@
       <geometry> <box size="0.2 0.05 0.1"/> </geometry>
       <origin xyz="0 0 -0.05" rpy="0 0 0"/>
     </visual>
-    <collision>
+    <!-- collision>
       <geometry> <box size="0.2 0.05 0.1"/> </geometry>
       <origin xyz="0 0 -0.05" rpy="0 0 0"/>
-    </collision>
+    </collision -->
     <inertial>
       <origin xyz="0 0 -0.05" rpy="0 0 0"/>
       <mass value="0.1"/>
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
-  <transmission name="transx">
+  <gazebo reference="body5"> <material>Gazebo/Green</material> </gazebo> 
+  <transmission name="trans4">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="jointx">
+    <joint name="joint4">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="motorx">
+    <actuator name="motor4">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
@@ -195,11 +200,12 @@
 
 <!-- ################################################################### -->
 <!-- migi kurubisi sita -->
-  <joint name="jointx2" type="fixed">
+  <joint name="joint5" type="revolute">
     <parent link="body5"/>
     <child link="body6"/>
     <origin xyz="0 0 -0.1" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
 
 <!-- migi asi ura -->
@@ -219,11 +225,22 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
+  <gazebo reference="body6"> <material>Gazebo/Blue</material> </gazebo> 
+  <transmission name="trans5">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint5">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor5">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 <!-- ################################################################### -->
 <!-- kokokara hidari asi -->
 <!-- hidariasi kokansetu -->
-  <joint name="jointy" type="revolute">
+  <joint name="joint6" type="revolute">
     <parent link="body1"/>
     <child  link="body7"/>
     <origin xyz="-0.1 0 0.0" rpy="0 0 0"/>
@@ -248,12 +265,13 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
-  <transmission name="transy">
+  <gazebo reference="body7"> <material>Gazebo/Blue</material> </gazebo> 
+  <transmission name="trans6">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="jointy">
+    <joint name="joint6">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="motory">
+    <actuator name="motor6">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
@@ -261,7 +279,7 @@
 
 <!-- ################################################################### -->
 <!-- hidari kokansetu -->
-  <joint name="joint22" type="revolute">
+  <joint name="joint7" type="revolute">
      <parent link="body7"/>
      <child  link="body8"/>
      <origin xyz="-0.1 0 -0.1" rpy="0 0 0"/>
@@ -285,12 +303,13 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/> 
     </inertial>
   </link>
-  <transmission name="trans2">
+  <gazebo reference="body8"> <material>Gazebo/Green</material> </gazebo> 
+  <transmission name="trans7">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="joint22">
+    <joint name="joint7">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="motor2">
+    <actuator name="motor7">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
@@ -298,7 +317,7 @@
 
 <!-- ################################################################### -->
 <!-- hidari hiza -->
-  <joint name="joint23" type="revolute">
+  <joint name="joint8" type="revolute">
     <parent link="body8"/>
     <child link="body9"/>
     <origin xyz="0 0 -0.4" rpy="0 0 3.1415"/>
@@ -323,12 +342,13 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
-  <transmission name="trans3">
+  <gazebo reference="body9"> <material>Gazebo/Red</material> </gazebo> 
+  <transmission name="trans8">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="joint23">
+    <joint name="joint8">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="motor3">
+    <actuator name="motor8">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
@@ -336,7 +356,7 @@
 
 <!-- ################################################################### -->
 <!-- hidari kurubusi kansetu -->
-  <joint name="joint2x" type="revolute">
+  <joint name="joint9" type="revolute">
     <parent link="body9"/>
     <child  link="body10"/>
     <origin xyz="0 0 -0.4" rpy="0 0 3.1415926"/>
@@ -351,22 +371,23 @@
       <origin xyz="0 0 -0.05" rpy="0 0 0"/>
       <material name="green"/>
     </visual>
-    <collision>
+    <!-- collision>
       <geometry> <box size="0.2 0.05 0.1"/> </geometry>
       <origin xyz="0 0 -0.05" rpy="0 0 0"/>
-    </collision>
+    </collision -->
     <inertial>
       <origin xyz="0 0 -0.05" rpy="0 0 0"/>
       <mass value="0.1"/>
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
-  <transmission name="transx">
+  <gazebo reference="body10"> <material>Gazebo/Green</material> </gazebo> 
+  <transmission name="trans9">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="joint2x">
+    <joint name="joint9">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
-    <actuator name="motorx">
+    <actuator name="motor9">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
@@ -374,11 +395,12 @@
 
 <!-- ################################################################### -->
 <!-- hidari kurubisi sita -->
-  <joint name="joint2x2" type="fixed">
+  <joint name="joint10" type="revolute">
     <parent link="body10"/>
     <child  link="body11"/>
     <origin xyz="0 0 -0.1" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
 
 <!-- hidari asi ura -->
@@ -398,5 +420,16 @@
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
+  <gazebo reference="body11"> <material>Gazebo/Blue</material> </gazebo> 
+  <transmission name="trans10">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint10">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor10">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 </robot>

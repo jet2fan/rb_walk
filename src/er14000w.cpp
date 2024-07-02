@@ -14,6 +14,11 @@ const int J2 = 2;
 const int J3 = 3;
 const int J4 = 4;
 const int J5 = 5; // id number of joint 5
+const int J6 = 6; // id number of joint 5
+const int J7 = 7; // id number of joint 5
+const int J8 = 8; // id number of joint 5
+const int J9 = 9; // id number of joint 5
+const int J10 = 10; // id number of joint 5
 
 class Control
 {
@@ -192,25 +197,50 @@ int main(int argc, char **argv)
   param[2] = 30; // 3秒
   Control Control1((char*)"/ri4/joint1_position_controller/command", J1, param);
   
-  param[0] = M_PI/6.0;
-  param[1] = -M_PI/6.0;
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
   param[2] = 30;
   Control Control2((char*)"/ri4/joint2_position_controller/command", J2, param);
 
-  param[0] = M_PI/2.0; // 180 度、ただし urdf ファイルで最大 150 度(2.617rad)に制限されている
-  param[1] = -M_PI/6.0;
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
   param[2] = 30;
   Control Control3((char*)"/ri4/joint3_position_controller/command", J3, param);
 
-  param[0] = M_PI * 5 / 6;  // 150 度
-  param[1] = -M_PI * 5 / 6; // -150 度
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
   param[2] = 30;
-  Control Controlx((char*)"/ri4/jointx_position_controller/command", J4, param);
+  Control Control4((char*)"/ri4/joint4_position_controller/command", J4, param);
 
-  param[0] = M_PI;
-  param[1] = -M_PI;
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
   param[2] = 30;
-  Control Controly((char*)"/ri4/jointy_position_controller/command", J5, param);
+  Control Control5((char*)"/ri4/joint5_position_controller/command", J5, param);
+
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
+  param[2] = 30; // 3秒
+  Control Control6((char*)"/ri4/joint6_position_controller/command", J6, param);
+
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
+  param[2] = 30; // 3秒
+  Control Control7((char*)"/ri4/joint7_position_controller/command", J7, param);
+
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
+  param[2] = 30; // 3秒
+  Control Control8((char*)"/ri4/joint8_position_controller/command", J8, param);
+
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
+  param[2] = 30; // 3秒
+  Control Control9((char*)"/ri4/joint9_position_controller/command", J9, param);
+  
+  param[0] = M_PI/6.0; // 30 度
+  param[1] = -M_PI/6.0; // -30 度
+  param[2] = 30; // 3秒
+  Control Control10((char*)"/ri4/joint10_position_controller/command", J10, param);
 
   ros::spin();
 
