@@ -48,7 +48,7 @@
 
 <!-- ################################################################### -->
 
-<!-- kokokara migiasi -->
+<!-- kokokara migi asi -->
 <!-- migi kokansetu -->
   <joint name="joint1" type="revolute">
      <parent link="body1"/>
@@ -107,6 +107,7 @@
         <geometry> <cylinder length="0.5" radius="0.1"/> </geometry -->
         <geometry> <box size="0.1 0.02 0.4"/> </geometry>
         <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+        <material name="green"/>
       </visual>
       <collision>
         <!-- origin xyz="0 0 0.25" rpy="0 0 0"/ -->
@@ -261,18 +262,18 @@
   </link>
 
 <!-- ################################################################### -->
-<!-- hidariasi sokeibu ue -->
-
+<!-- kokokara hidari asi -->
+<!-- hidariasi kokansetu -->
   <joint name="jointy" type="revolute">
     <parent link="body1"/>
-    <child link="body7"/>
+    <child  link="body7"/>
     <!-- origin xyz= "0 0.2 0.3" rpy="0 0 0" / -->
     <origin xyz="-0.1 0 0.0" rpy="0 0 0"/>
     <axis xyz="0 -1 0"/>
     <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
 
-<!-- hidari sokeibu -->
+<!-- hidari ue sokeibu -->
   <link name="body7">
     <visual>
       <!-- origin xyz="0 0.4 0" rpy="0 0 0"/>
@@ -304,5 +305,145 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+
+<!-- ################################################################### -->
+<!-- hidari kokansetu -->
+  <joint name="joint22" type="revolute">
+     <parent link="body7"/>
+     <child  link="body8"/>
+     <origin xyz="-0.1 0 -0.1" rpy="0 0 0"/>
+     <axis xyz="1 0 0"/>
+     <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+  </joint>
+<!-- hidari futomomo -->
+  <link name="body8">
+    <visual>
+      <geometry> <box size="0.1 0.02 0.4"/> </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.02 0.4"/> </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>  
+      <mass value="0.1"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/> 
+    </inertial>
+  </link>
+  <transmission name="trans2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint22">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+<!-- ################################################################### -->
+<!-- hidari hiza -->
+  <joint name="joint23" type="revolute">
+    <parent link="body8"/>
+    <child link="body9"/>
+    <origin xyz="0 0 -0.4" rpy="0 0 3.1415"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+  </joint>
+
+<!-- hidari sune -->
+  <link name="body9">
+    <visual>
+      <geometry> <box size="0.1 0.01 0.4"/> </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry> <box size="0.1 0.01 0.4"/> </geometry>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>  
+      <mass value="0.1"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
+    </inertial>
+  </link>
+  <transmission name="trans3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint23">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+<!-- ################################################################### -->
+<!-- hidari kurubusi kansetu -->
+  <joint name="joint2x" type="revolute">
+    <parent link="body9"/>
+    <child  link="body10"/>
+    <origin xyz="0 0 -0.4" rpy="0 0 3.1415926"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+  </joint>
+
+<!-- hidari kurubusi -->
+  <link name="body10">
+    <visual>
+      <geometry> <box size="0.2 0.05 0.1"/> </geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <geometry> <box size="0.2 0.05 0.1"/> </geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
+    </inertial>
+  </link>
+  <transmission name="transx">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint2x">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motorx">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+<!-- ################################################################### -->
+<!-- hidari kurubisi sita -->
+  <joint name="joint2x2" type="fixed">
+    <parent link="body10"/>
+    <child  link="body11"/>
+    <origin xyz="0 0 -0.1" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+<!-- hidari asi ura -->
+  <link name="body11">
+    <visual>
+      <geometry> <box size="0.2 0.3 0.01"/> </geometry>
+      <origin xyz="0 0 -0.005" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry> <box size="0.2 0.3 0.01"/> </geometry>
+      <origin xyz="0 0 -0.005" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 -0.005" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
+    </inertial>
+  </link>
 
 </robot>
