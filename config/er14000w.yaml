@@ -23,43 +23,43 @@ ri4:
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
 # Position Controllers ---------------------------------------
-  jointx_position_controller:
+  joint4_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint4
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
 # Position Controllers ---------------------------------------
-  jointy_position_controller:
+  joint5_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint5
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
 # Position Controllers ---------------------------------------
-  jointy_position_controller:
+  joint6_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint6
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
 # Position Controllers ---------------------------------------
-  jointy_position_controller:
+  joint7_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint7
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
 # Position Controllers ---------------------------------------
-  jointy_position_controller:
+  joint8_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint8
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
 # Position Controllers ---------------------------------------
-  jointy_position_controller:
+  joint9_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint9
     pid: {p: 100.0, i: 0.01, d: 10.0}
 
 # Position Controllers ---------------------------------------
-  jointy_position_controller:
+  joint10_position_controller:
     type: effort_controllers/JointPositionController
     joint: joint10
     pid: {p: 100.0, i: 0.01, d: 10.0}

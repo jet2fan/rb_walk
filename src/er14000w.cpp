@@ -45,10 +45,10 @@ Control::Control(char *name, int idnum, float param[NUMPARAM])
   c_pub = nh.advertise<std_msgs::Float64>(name, 1000);
 
 // 0.1sec 毎にtimerCallback() が呼び出されるように登録する  
-// timer = nh.createTimer(ros::Duration(0.1), &Control::timerCallback, this);
+timer = nh.createTimer(ros::Duration(0.1), &Control::timerCallback, this);
 
 // timerCallback() の別の実装 timerCallback2() を作ってみた 
-  timer = nh.createTimer(ros::Duration(0.1), &Control::timerCallback2, this);
+//  timer = nh.createTimer(ros::Duration(0.1), &Control::timerCallback2, this);
 
   id = idnum; // 渡された値を変数 id にセットする
   timing = 0; // この変数は timerCallback() が呼び出された回数を数えて記憶している
@@ -97,6 +97,21 @@ void Control::timerCallback(const ros::TimerEvent&)
 //    nothing;
       break;
     case J5:
+//    nothing;
+      break;
+    case J6:
+//    nothing;
+      break;
+    case J7:
+//    nothing;
+      break;
+    case J8:
+//    nothing;
+      break;
+    case J9:
+//    nothing;
+      break;
+    case J10:
 //    nothing;
       break;
     default:
