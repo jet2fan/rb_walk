@@ -432,4 +432,115 @@
     </actuator>
   </transmission>
 
+<!-- ################################################################### -->
+<!-- migi kata kansetu y -->
+  <joint name="joint11" type="fixed">
+    <parent link="body1"/>
+    <child  link="body12"/>
+    <origin xyz="0.1 0 0.5" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+<!-- migi kata -->
+  <link name="body12">
+    <visual>
+      <geometry> <box size="0.2 0.05 0.1"/> </geometry>
+      <origin xyz="0.1 0 -0.05" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+  </link>
+  <gazebo reference="body12"> <material>Gazebo/Blue</material> </gazebo> 
+
+<!-- ################################################################### -->
+<!-- migi kata kansetu x -->
+  <joint name="joint12" type="fixed">
+    <parent link="body12"/>
+    <child  link="body13"/>
+    <origin xyz="0.1 0 -0.1" rpy="0 0 0"/>
+  </joint>
+
+<!-- migi jyouwan -->
+  <link name="body13">
+    <visual>
+      <geometry>
+        <box size="0.1 0.02 0.3"/>
+      </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+  </link>
+  <gazebo reference="body13"> <material>Gazebo/Green</material> </gazebo> 
+
+<!-- ################################################################### -->
+<!-- migi hiji -->
+  <joint name="joint13" type="fixed">
+    <parent link="body13"/>
+    <child  link="body14"/>
+    <origin xyz="0 0 -0.3" rpy="0 0 0"/>
+  </joint>
+
+<!-- migi zenwan -->
+  <link name="body14">
+    <visual>
+      <geometry> <box size="0.1 0.01 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+  </link>
+  <gazebo reference="body14"> <material>Gazebo/Red</material> </gazebo> 
+
+<!-- ################################################################### -->
+<!-- hidari kata y -->
+  <joint name="joint14" type="fixed">
+    <parent link="body1"/>
+    <child  link="body15"/>
+    <origin xyz="-0.1 0 0.5" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+<!-- hidari kata -->
+ <link name="body15">
+    <visual>
+      <geometry> <box size="0.2 0.05 0.1"/> </geometry>
+      <origin xyz="-0.1 0 -0.05" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+  </link>
+  <gazebo reference="body15"> <material>Gazebo/Blue</material> </gazebo> 
+
+<!-- ################################################################### -->
+<!-- hidari kata x -->
+  <joint name="joint15" type="fixed">
+    <parent link="body15"/>
+    <child  link="body16"/>
+    <origin xyz="-0.1 0 -0.1" rpy="0 0 3.1415"/>
+  </joint>
+<!-- hidari jyouwan -->
+  <link name="body16">
+    <visual>
+      <geometry> <box size="0.1 0.02 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+  </link>
+  <gazebo reference="body16"> <material>Gazebo/Green</material> </gazebo> 
+
+<!-- ################################################################### -->
+<!-- hidari hiji -->
+  <joint name="joint16" type="fixed">
+    <parent link="body16"/>
+    <child  link="body17"/>
+    <origin xyz="0 0 -0.3" rpy="0 0 0"/>
+    <limit lower="-1.5" upper="1.5" effort="0" velocity="0"/>
+  </joint>
+
+  <link name="body17">
+    <visual>
+      <geometry> <box size="0.1 0.01 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <material name="red"/>
+    </visual>
+  </link>
+  <gazebo reference="body17"> <material>Gazebo/Red</material> </gazebo> 
+
 </robot>
