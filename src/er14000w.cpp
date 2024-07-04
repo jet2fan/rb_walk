@@ -9,15 +9,15 @@ const int NUMPARAM = 10; // param[] の配列の要素数、必要なら増や�
 // 関節の個数は必要なだけ増やすことが可能
 // 関節を増やす場合、様々なファイルに設定が必要なのでマニュアルをよく読む
 
-const int J1 = 1; // id number of joint 1
-const int J2 = 2;
-const int J3 = 3;
-const int J4 = 4;
-const int J5 = 5; // id number of joint 5
-const int J6 = 6; // id number of joint 5
-const int J7 = 7; // id number of joint 5
-const int J8 = 8; // id number of joint 5
-const int J9 = 9; // id number of joint 5
+const int J1  = 1; // id number of joint 1
+const int J2  = 2;
+const int J3  = 3;
+const int J4  = 4;
+const int J5  = 5; // id number of joint 5
+const int J6  = 6; // id number of joint 5
+const int J7  = 7; // id number of joint 5
+const int J8  = 8; // id number of joint 5
+const int J9  = 9; // id number of joint 5
 const int J10 = 10; // id number of joint 5
 
 class Control
