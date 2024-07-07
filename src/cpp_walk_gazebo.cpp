@@ -1054,11 +1054,11 @@ main (int argc, char **argv)
       pos.data  = (float) count[6]   ;c_pub4.publish(pos);	//踝
       pos.data  = (float) count[7]   ;c_pub5.publish(pos);	//下
       //左足の下から
-      pos.data  = (float) count[8]   ;c_pub6.publish(pos);	//下
-      pos.data  = (float) count[9]   ;c_pub7.publish(pos);	//踝
+      pos.data  = (float) count[8]   ;c_pub10.publish(pos);	//下
+      pos.data  = (float) count[9]   ;c_pub9.publish(pos);	//踝
       pos.data  = (float) count[10]  ;c_pub8.publish(pos);	//膝
-      pos.data  = (float) count[11]  ;c_pub9.publish(pos);	//股
-      pos.data  = (float) count[12]  ;c_pub10.publish(pos);	//上
+      pos.data  = (float) count[11]  ;c_pub7.publish(pos);	//股
+      pos.data  = (float) count[12]  ;c_pub6.publish(pos);	//上
       
       loop_rate.sleep ();
       i++;
