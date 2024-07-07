@@ -1,9 +1,11 @@
+//home/yo/catkin_ws/src/ri4/src/cpp_walk_gazebo.cpp
 //20240217先ずは股y軸の計算結果をグラフに出力する。
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>		//erorr検出装置
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
+#include "std_msgs/Float64.h" //20240707Gazebo
 
 //sheet "1" 軌道算出
 #define ID_MAX 40		//配列変数個数
@@ -958,32 +960,45 @@ main (int argc, char **argv)
   //      right_leg.array_ankle_down);
   ros::init (argc, argv, "rvis_joint_publisher");
   ros::NodeHandle nh;
-  ros::Publisher joint_pub =
-    nh.advertise < sensor_msgs::JointState > ("joint_states", 10);
+  ros::Publisher joint_pub = nh.advertise < sensor_msgs::JointState > ("joint_states", 10);
   ros::Rate loop_rate (10);
-
+  //20240706 ri4
+  std_msgs::Float64 pos; //--> #include "std_msgs/Float64.h"
+  //src/ri4/src/cpp_walk_gazebo.cpp|965 col 13| error: ‘Float64’ is not a member of ‘std_msgs’ 
+  ros::Publisher c_pub1  = nh.advertise<std_msgs::Float64>("/ri4/joint1_position_controller/command", 1000);
+  ros::Publisher c_pub2  = nh.advertise<std_msgs::Float64>("/ri4/joint2_position_controller/command", 1000);
+  ros::Publisher c_pub3  = nh.advertise<std_msgs::Float64>("/ri4/joint3_position_controller/command", 1000);
+  ros::Publisher c_pub4  = nh.advertise<std_msgs::Float64>("/ri4/joint4_position_controller/command", 1000);
+  ros::Publisher c_pub5  = nh.advertise<std_msgs::Float64>("/ri4/joint5_position_controller/command", 1000);
+  ros::Publisher c_pub6  = nh.advertise<std_msgs::Float64>("/ri4/joint6_position_controller/command", 1000);
+  ros::Publisher c_pub7  = nh.advertise<std_msgs::Float64>("/ri4/joint7_position_controller/command", 1000);
+  ros::Publisher c_pub8  = nh.advertise<std_msgs::Float64>("/ri4/joint8_position_controller/command", 1000);
+  ros::Publisher c_pub9  = nh.advertise<std_msgs::Float64>("/ri4/joint9_position_controller/command", 1000);
+  ros::Publisher c_pub10 = nh.advertise<std_msgs::Float64>("/ri4/joint10_position_controller/command", 1000);
+  
   sensor_msgs::JointState js0;
   js0.name.resize (16);
   //右足
-  js0.name[3] = "body2_joint";
-  js0.name[4] = "body3_joint";
-  js0.name[5] = "body4_joint";
-  js0.name[6] = "body5_joint";
-  js0.name[7] = "body6_joint";
+  js0.name[3] = "joint1";
+  js0.name[4] = "joint2";
+  js0.name[5] = "joint3";
+  js0.name[6] = "joint4";
+  js0.name[7] = "joint5";
   //左足
-  js0.name[12] = "body7_joint";
-  js0.name[11] = "body8_joint";
-  js0.name[10] = "body9_joint";
-  js0.name[9] = "body10_joint";
-  js0.name[8] = "body11_joint";
+  js0.name[12] = "joint6";
+  js0.name[11] = "joint7";
+  js0.name[10] = "joint8";
+  js0.name[9] =  "joint9";
+  js0.name[8] =  "joint10";
   //右腕
-  js0.name[2] = "body12_joint";
-  js0.name[1] = "body13_joint";
-  js0.name[0] = "body14_joint";
+  js0.name[2] = "joint11";
+  js0.name[1] = "joint12";
+  js0.name[0] = "joint13";
   //左腕
-  js0.name[13] = "body15_joint";
-  js0.name[14] = "body16_joint";
-  js0.name[15] = "body17_joint";
+  js0.name[13] = "joint14";
+  js0.name[14] = "joint15";
+  js0.name[15] = "joint16";
+
   js0.position.resize (16);
 
   int i;
@@ -1029,9 +1044,22 @@ main (int argc, char **argv)
       js0.position[13] = (float) count[13] ;	//肩
       js0.position[14] = (float) count[14] ;	//肩
       js0.position[15] = (float) count[15] ;	//肘
+
       joint_pub.publish (js0);
-      //count++;
-      //ros::spinOnce ();
+      //Gazebo data作成
+      //右足の上から
+      pos.data  = (float) count[3]   ;c_pub1.publish(pos);	//上
+      pos.data  = (float) count[4]   ;c_pub2.publish(pos);	//股
+      pos.data  = (float) count[5]   ;c_pub3.publish(pos);	//膝
+      pos.data  = (float) count[6]   ;c_pub4.publish(pos);	//踝
+      pos.data  = (float) count[7]   ;c_pub5.publish(pos);	//下
+      //左足の下から
+      pos.data  = (float) count[8]   ;c_pub6.publish(pos);	//下
+      pos.data  = (float) count[9]   ;c_pub7.publish(pos);	//踝
+      pos.data  = (float) count[10]  ;c_pub8.publish(pos);	//膝
+      pos.data  = (float) count[11]  ;c_pub9.publish(pos);	//股
+      pos.data  = (float) count[12]  ;c_pub10.publish(pos);	//上
+      
       loop_rate.sleep ();
       i++;
     }

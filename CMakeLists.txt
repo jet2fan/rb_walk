@@ -200,3 +200,5 @@ include_directories(
 
 add_executable(er14000w src/er14000w.cpp)
 target_link_libraries(er14000w ${catkin_LIBRARIES})
+add_executable(cpp_walk_gazebo src/cpp_walk_gazebo.cpp)
+target_link_libraries(cpp_walk_gazebo ${catkin_LIBRARIES})
