@@ -23,7 +23,7 @@
   <joint name="joint0" type="fixed">
     <parent link="base_link"/>
     <child link="body1"/>
-    <origin xyz= "1 1 1.2" rpy="0 0 0" />
+    <origin xyz= "1 1 1.05" rpy="0 0 0" />
   </joint>
 
 <!-- doutai -->
@@ -459,8 +459,8 @@
 <!-- migi jyouwan -->
   <link name="body13">
     <visual>
-      <geometry> <box size="0.1 0.02 1.4"/> </geometry>
-      <origin xyz="0 0 -0.7" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.02 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
       <material name="green"/>
     </visual>
   </link>
@@ -471,20 +471,16 @@
   <joint name="joint13" type="fixed">
     <parent link="body13"/>
     <child  link="body14"/>
-    <origin xyz="0 0 -1.4" rpy="0 0 0"/>
+    <origin xyz="0 0 -.3" rpy="0 0 0"/>
   </joint>
 
 <!-- migi zenwan -->
   <link name="body14">
     <visual>
-      <geometry> <box size="0.1 0.3 0.1"/> </geometry>
-      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.1 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
       <material name="red"/>
     </visual>
-    <collision>
-      <geometry> <box size="0.1 0.3 0.1"/> </geometry>
-      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
-    </collision>
   </link>
   <gazebo reference="body14"> <material>Gazebo/Red</material> </gazebo> 
 
@@ -518,8 +514,8 @@
 <!-- hidari jyouwan -->
   <link name="body16">
     <visual>
-      <geometry> <box size="0.1 0.02 1.4"/> </geometry>
-      <origin xyz="0 0 -0.7" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.02 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
       <material name="green"/>
     </visual>
   </link>
@@ -530,20 +526,16 @@
   <joint name="joint16" type="fixed">
     <parent link="body16"/>
     <child  link="body17"/>
-    <origin xyz="0 0 -1.4" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.3" rpy="0 0 0"/>
   </joint>
 
 <!-- hidari zenwan -->
   <link name="body17">
     <visual>
-      <geometry> <box size="0.1 0.3 0.1"/> </geometry>
-      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+      <geometry> <box size="0.1 0.1 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
       <material name="red"/>
     </visual>
-    <collision>
-      <geometry> <box size="0.1 0.3 0.1"/> </geometry>
-      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
-    </collision>
   </link>
   <gazebo reference="body17"> <material>Gazebo/Red</material> </gazebo> 
 
