@@ -538,7 +538,7 @@ private:
 		*array_reg_knee = *array_knee_angle_trajectory;
 		*array_reg_ankle = *array_ankle_angle_trajectory;
     *array_hip_up = array_hip_angle_sheet4[0];
-    *array_ankle_down = *array_hip_up * -1;
+    *array_ankle_down = *array_hip_up * 1;
 		array_hip_angle_trajectory++;
 		array_knee_angle_trajectory++;
 		array_ankle_angle_trajectory++;
@@ -548,7 +548,7 @@ private:
 		*array_reg_knee = *array_knee_angle_horizontal;
 		*array_reg_ankle = *array_ankle_angle_horizontal;
     *array_hip_up = array_hip_angle_sheet4[i];
-    *array_ankle_down = *array_hip_up * -1;
+    *array_ankle_down = *array_hip_up * 1;
 		array_hip_angle_horizontal++;
 		array_knee_angle_horizontal++;
 		array_ankle_angle_horizontal++;
@@ -558,14 +558,14 @@ private:
 		*array_reg_knee = *(array_reg_knee - 1);
 		*array_reg_ankle = *(array_reg_ankle - 1);
     *array_hip_up = array_hip_angle_sheet4[ID - 1];
-    *array_ankle_down = *array_hip_up * -1;
+    *array_ankle_down = *array_hip_up * 1;
 		break;
 	      case 3:
 		*array_reg_hip = *array_hip_angle_horizontal_sheet3;
 		*array_reg_knee = *array_knee_angle_horizontal_sheet3;
 		*array_reg_ankle = *array_ankle_angle_horizontal_sheet3;
     *array_hip_up = array_ankle_angle_sheet4[i];
-    *array_ankle_down = *array_hip_up * -1;
+    *array_ankle_down = *array_hip_up * 1;
 		array_hip_angle_horizontal_sheet3++;
 		array_knee_angle_horizontal_sheet3++;
 		array_ankle_angle_horizontal_sheet3++;

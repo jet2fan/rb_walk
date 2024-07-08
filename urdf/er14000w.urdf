@@ -244,7 +244,7 @@
     <parent link="body1"/>
     <child  link="body7"/>
     <origin xyz="-0.1 0 0.0" rpy="0 0 0"/>
-    <axis xyz="0 -1 0"/>
+    <axis xyz="0 1 0"/>
     <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans6">
@@ -396,7 +396,7 @@
     <parent link="body10"/>
     <child  link="body11"/>
     <origin xyz="0 0 -0.1" rpy="0 0 0"/>
-    <axis xyz="0 -1 0"/>
+    <axis xyz="0 1 0"/>
     <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans10">
