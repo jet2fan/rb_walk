@@ -1022,8 +1022,8 @@ main (int argc, char **argv)
       //左右体重移動20240613
       count[3] = right_leg.array_hip_up[i]; 
       count[7] = right_leg.array_ankle_down[i]; 
-      count[8] = left_leg.array_hip_up[i]; 
-      count[12] = left_leg.array_ankle_down[i]; 
+      count[12] = left_leg.array_hip_up[i]; 
+      count[8] = left_leg.array_ankle_down[i]; 
       //右腕
       js0.position[0] = (float) count[0]   ;	//肩
       js0.position[1] = (float) count[1]   ;	//肩
