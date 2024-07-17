@@ -6,7 +6,6 @@
 #include <ros/ros.h>
 #include <sensor_msgs/JointState.h>
 #include "std_msgs/Float64.h" //20240707Gazebo
-
 //sheet "1" 軌道算出
 #define ID_MAX 40		//配列変数個数
 #define INITIAL_LEG_BENDING_LENGTH 10.0	//初期足曲げ長さ
@@ -28,7 +27,10 @@
 #define REFERENCE_ANGLE_HIP_Z_SHEET4 0.0	// 股関節基準角度
 //sheet "5" 歩行全体統括
 #define WALKING_PROCESS 4	//歩行プロセス
-double count[15];
+#define NUMBER_SERVO 15 //サーボ個数-1
+double count[NUMBER_SERVO]; //サーボの運動
+double count_end[NUMBER_SERVO]; //最後の姿勢を保持
+int Start_motion = 0; //モーションスタートフラグ 1:スタート、0:継続
 
 //classの作成
 class LegMotion_xz
@@ -937,6 +939,29 @@ gnuplot2 (size_t ID, double *x1, double *y1, double *x2, double *y2)
   return 0;
 }
 
+int 
+hokan(double count_end_h[], double count_h[] ) {
+  //変数定義
+  double delta_a[NUMBER_SERVO]; //補間の為の傾き
+  double value_hokan[NUMBER_SERVO];//補間計算値
+  int number_hokan = 30; //補間数
+  //傾きの算出
+  int i = 0;
+  int ii = 0;
+  for ( i = 0 ; i < NUMBER_SERVO ; i++ ){
+    delta_a[i] = (count_h[i] - count_end_h[i]) / number_hokan ;
+  }
+  //補間動作
+  for ( ii=0 ; ii <= number_hokan ; ii++){
+    //補間値の計算
+    for ( i = 0 ; i < NUMBER_SERVO ; i++ ){
+      value_hokan[i] = delta_a[i] * (double)ii + count_end_h[i];  
+    }
+    //Gazeboにデータ送信
+
+  }
+}
+
 int
 main (int argc, char **argv)
 {
@@ -961,7 +986,6 @@ main (int argc, char **argv)
   ros::init (argc, argv, "rvis_joint_publisher");
   ros::NodeHandle nh;
   ros::Publisher joint_pub = nh.advertise < sensor_msgs::JointState > ("joint_states", 10);
-  ros::Rate loop_rate (10);
   //20240706 ri4
   std_msgs::Float64 pos; //--> #include "std_msgs/Float64.h"
   //src/ri4/src/cpp_walk_gazebo.cpp|965 col 13| error: ‘Float64’ is not a member of ‘std_msgs’ 
@@ -975,6 +999,7 @@ main (int argc, char **argv)
   ros::Publisher c_pub8  = nh.advertise<std_msgs::Float64>("/ri4/joint8_position_controller/command", 1000);
   ros::Publisher c_pub9  = nh.advertise<std_msgs::Float64>("/ri4/joint9_position_controller/command", 1000);
   ros::Publisher c_pub10 = nh.advertise<std_msgs::Float64>("/ri4/joint10_position_controller/command", 1000);
+  ros::Rate loop_rate (10);
   
   sensor_msgs::JointState js0;
   js0.name.resize (16);
@@ -998,20 +1023,35 @@ main (int argc, char **argv)
   js0.name[13] = "joint14";
   js0.name[14] = "joint15";
   js0.name[15] = "joint16";
-
   js0.position.resize (16);
 
-  int i;
-  for (i = 0; i < 16; i++)
+  //ループの前の変数初期化
+  int i = 0;
+  for (i = 0; i <= NUMBER_SERVO; i++)
     {
-      count[i] = 0;
+      count_end[i] = 0;
     }
-  i=0;
+    i = 0;
+    Start_motion = 1;
   while (ros::ok ())
     {
       js0.header.stamp = ros::Time::now ();
       //変数ループ
-      if ( i >= ID_MAX * WALKING_PROCESS ) i=0 ;
+      if ( i >= ID_MAX * WALKING_PROCESS ){
+        //変数設定
+        count_end[4]  = right_leg.array_reg_hip[i];
+        count_end[5]  = right_leg.array_reg_knee[i];
+        count_end[6]  = right_leg.array_reg_ankle[i];
+        count_end[11] = left_leg.array_reg_hip[i];
+        count_end[10] = left_leg.array_reg_knee[i];
+        count_end[9]  = left_leg.array_reg_ankle[i];
+        //左右体重移動20240613
+        count_end[3] = right_leg.array_hip_up[i]; 
+        count_end[7] = right_leg.array_ankle_down[i]; 
+        count_end[12] = left_leg.array_hip_up[i]; 
+        count_end[8] = left_leg.array_ankle_down[i]; 
+        i=0 ;
+      }
       //変数設定
       count[4]  = right_leg.array_reg_hip[i];
       count[5]  = right_leg.array_reg_knee[i];
@@ -1024,6 +1064,11 @@ main (int argc, char **argv)
       count[7] = right_leg.array_ankle_down[i]; 
       count[12] = left_leg.array_hip_up[i]; 
       count[8] = left_leg.array_ankle_down[i]; 
+      //補間
+      if ( Start_motion == 1 ){
+        hokan( count_end , count );
+        Start_motion =0;
+      }
       //右腕
       js0.position[0] = (float) count[0]   ;	//肩
       js0.position[1] = (float) count[1]   ;	//肩
