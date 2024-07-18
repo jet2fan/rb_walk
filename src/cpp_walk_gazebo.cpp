@@ -29,6 +29,7 @@
 #define WALKING_PROCESS 4	//歩行プロセス
 #define NUMBER_SERVO 15 //サーボ個数-1
 #define LOOP_RATE 10 //ros のループするまでの時間間隔
+#define NUMBER_HOKAN 60 //ros のループするまでの時間間隔
 double count[NUMBER_SERVO]; //サーボの運動
 double count_end[NUMBER_SERVO]; //最後の姿勢を保持
 int Start_motion = 0; //モーションスタートフラグ 1:スタート、0:継続
@@ -1001,7 +1002,7 @@ hokan(double count_end_h[], double count_h[] ) {
   ros_publishe pu; //countデータをros publisheに公開するクラス
   double delta_a[NUMBER_SERVO]; //補間の為の傾き
   double value_hokan[NUMBER_SERVO];//補間計算値
-  int number_hokan = 30; //補間数
+  int number_hokan = NUMBER_HOKAN; //補間数
   //傾きの算出
   int i = 0;
   int ii = 0;

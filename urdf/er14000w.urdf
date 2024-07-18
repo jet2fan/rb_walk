@@ -434,7 +434,7 @@
   <joint name="joint11" type="fixed">
     <parent link="body1"/>
     <child  link="body12"/>
-    <origin xyz="0.1 0 0.5" rpy="0 0 0"/>
+    <origin xyz="0.1 0 0.5" rpy="0 -0.23 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -459,8 +459,10 @@
 <!-- migi jyouwan -->
   <link name="body13">
     <visual>
-      <geometry> <box size="0.1 0.02 0.3"/> </geometry>
-      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <!-- geometry> <box size="0.1 0.02 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/ -->
+      <geometry> <box size="0.1 0.02 1.3"/> </geometry>
+      <origin xyz="0 0 -0.65" rpy="0 0 0"/>
       <material name="green"/>
     </visual>
   </link>
@@ -471,16 +473,23 @@
   <joint name="joint13" type="fixed">
     <parent link="body13"/>
     <child  link="body14"/>
-    <origin xyz="0 0 -.3" rpy="0 0 0"/>
+    <!-- origin xyz="0 0 -.3" rpy="0 0 0"/ -->
+    <origin xyz="0 0 -1.3" rpy="0 0 0"/>
   </joint>
 
 <!-- migi zenwan -->
   <link name="body14">
     <visual>
-      <geometry> <box size="0.1 0.1 0.3"/> </geometry>
-      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <!-- geometry> <box size="0.1 0.1 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/ -->
+      <geometry> <box size="0.1 1.2 0.1"/> </geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
       <material name="red"/>
     </visual>
+    <collision>
+      <geometry> <box size="0.1 1.2 0.1"/> </geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    </collision>
   </link>
   <gazebo reference="body14"> <material>Gazebo/Red</material> </gazebo> 
 
@@ -489,7 +498,7 @@
   <joint name="joint14" type="fixed">
     <parent link="body1"/>
     <child  link="body15"/>
-    <origin xyz="-0.1 0 0.5" rpy="0 0 0"/>
+    <origin xyz="-0.1 0 0.5" rpy="0 0.23 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -514,8 +523,10 @@
 <!-- hidari jyouwan -->
   <link name="body16">
     <visual>
-      <geometry> <box size="0.1 0.02 0.3"/> </geometry>
-      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <!-- geometry> <box size="0.1 0.02 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/ -->
+      <geometry> <box size="0.1 0.02 1.3"/> </geometry>
+      <origin xyz="0 0 -0.65" rpy="0 0 0"/>
       <material name="green"/>
     </visual>
   </link>
@@ -526,17 +537,26 @@
   <joint name="joint16" type="fixed">
     <parent link="body16"/>
     <child  link="body17"/>
-    <origin xyz="0 0 -0.3" rpy="0 0 0"/>
+    <!-- origin xyz="0 0 -0.3" rpy="0 0 0"/ -->
+    <origin xyz="0 0 -1.3" rpy="0 0 0"/>
   </joint>
 
 <!-- hidari zenwan -->
   <link name="body17">
     <visual>
-      <geometry> <box size="0.1 0.1 0.3"/> </geometry>
-      <origin xyz="0 0 -0.15" rpy="0 0 0"/>
+      <!-- geometry> <box size="0.1 0.1 0.3"/> </geometry>
+      <origin xyz="0 0 -0.15" rpy="0 0 0"/ -->
+      <geometry> <box size="0.1 1.2 0.1"/> </geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
       <material name="red"/>
     </visual>
+    <collision>
+      <geometry> <box size="0.1 1.2 0.1"/> </geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    </collision>
   </link>
   <gazebo reference="body17"> <material>Gazebo/Red</material> </gazebo> 
-
 </robot>
+
+
+
