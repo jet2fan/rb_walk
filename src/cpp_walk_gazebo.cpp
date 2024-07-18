@@ -997,6 +997,8 @@ gnuplot2 (size_t ID, double *x1, double *y1, double *x2, double *y2)
 int   //姿勢補間関数 
 hokan(double count_end_h[], double count_h[] ) {
   //変数定義
+  ros::Rate loop_rate (LOOP_RATE);
+  ros_publishe pu; //countデータをros publisheに公開するクラス
   double delta_a[NUMBER_SERVO]; //補間の為の傾き
   double value_hokan[NUMBER_SERVO];//補間計算値
   int number_hokan = 30; //補間数
@@ -1013,6 +1015,8 @@ hokan(double count_end_h[], double count_h[] ) {
       value_hokan[i] = delta_a[i] * (double)ii + count_end_h[i];  
     }
     //Gazeboにデータ送信
+    pu.push_message( value_hokan );
+    loop_rate.sleep ();
   }
 }
 
