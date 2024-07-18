@@ -28,11 +28,64 @@
 //sheet "5" 歩行全体統括
 #define WALKING_PROCESS 4	//歩行プロセス
 #define NUMBER_SERVO 15 //サーボ個数-1
+#define LOOP_RATE 10 //ros のループするまでの時間間隔
 double count[NUMBER_SERVO]; //サーボの運動
 double count_end[NUMBER_SERVO]; //最後の姿勢を保持
 int Start_motion = 0; //モーションスタートフラグ 1:スタート、0:継続
 
 //classの作成
+//################################################################################
+class ros_publishe
+{
+  public:
+    ros_publishe(); // コンストラクタ
+    ~ros_publishe(); // デストラクタ
+    void push_message(double count[]);
+  private:
+/*
+    ros::Publisher c_pub;
+    ros::Subscriber p_sub;
+*/
+    ros::Timer timer;
+    ros::NodeHandle nh;
+    std_msgs::Float64 pos; //--> #include "std_msgs/Float64.h"
+    ros::Publisher c_pub1  = nh.advertise<std_msgs::Float64>("/ri4/joint1_position_controller/command", 1000);
+    ros::Publisher c_pub2  = nh.advertise<std_msgs::Float64>("/ri4/joint2_position_controller/command", 1000);
+    ros::Publisher c_pub3  = nh.advertise<std_msgs::Float64>("/ri4/joint3_position_controller/command", 1000);
+    ros::Publisher c_pub4  = nh.advertise<std_msgs::Float64>("/ri4/joint4_position_controller/command", 1000);
+    ros::Publisher c_pub5  = nh.advertise<std_msgs::Float64>("/ri4/joint5_position_controller/command", 1000);
+    ros::Publisher c_pub6  = nh.advertise<std_msgs::Float64>("/ri4/joint6_position_controller/command", 1000);
+    ros::Publisher c_pub7  = nh.advertise<std_msgs::Float64>("/ri4/joint7_position_controller/command", 1000);
+    ros::Publisher c_pub8  = nh.advertise<std_msgs::Float64>("/ri4/joint8_position_controller/command", 1000);
+    ros::Publisher c_pub9  = nh.advertise<std_msgs::Float64>("/ri4/joint9_position_controller/command", 1000);
+    ros::Publisher c_pub10 = nh.advertise<std_msgs::Float64>("/ri4/joint10_position_controller/command", 1000);
+};
+
+ros_publishe::ros_publishe()
+{
+}
+ros_publishe::~ros_publishe()
+{
+}
+void ros_publishe::push_message(double count[])
+{
+  //Gazebo data作成
+  //右足の上から
+  pos.data  = (float) count[3]   ;c_pub1.publish(pos);	//上
+  pos.data  = (float) count[4]   ;c_pub2.publish(pos);	//股
+  pos.data  = (float) count[5]   ;c_pub3.publish(pos);	//膝
+  pos.data  = (float) count[6]   ;c_pub4.publish(pos);	//踝
+  pos.data  = (float) count[7]   ;c_pub5.publish(pos);	//下
+  //左足の下から
+  pos.data  = (float) count[8]   ;c_pub10.publish(pos);	//下
+  pos.data  = (float) count[9]   ;c_pub9.publish(pos);	//踝
+  pos.data  = (float) count[10]  ;c_pub8.publish(pos);	//膝
+  pos.data  = (float) count[11]  ;c_pub7.publish(pos);	//股
+  pos.data  = (float) count[12]  ;c_pub6.publish(pos);	//上
+}
+
+//################################################################################
+//足の運動の計算する
 class LegMotion_xz
 {
 private:
@@ -795,8 +848,10 @@ public:
           );
   }
 };
+//################################################################################
 
-//共通関数 グラフ作成
+//共通関数 
+//グラフ作成
 double				//配列変数内の最大値を選択
 max_element (const double *array, size_t size)
 {
@@ -939,7 +994,7 @@ gnuplot2 (size_t ID, double *x1, double *y1, double *x2, double *y2)
   return 0;
 }
 
-int 
+int   //姿勢補間関数 
 hokan(double count_end_h[], double count_h[] ) {
   //変数定義
   double delta_a[NUMBER_SERVO]; //補間の為の傾き
@@ -958,35 +1013,32 @@ hokan(double count_end_h[], double count_h[] ) {
       value_hokan[i] = delta_a[i] * (double)ii + count_end_h[i];  
     }
     //Gazeboにデータ送信
-
   }
 }
 
+//################################################################################
 int
 main (int argc, char **argv)
 {
-  //double array_reg_up[ID_MAX * WALKING_PROCESS];      //右足の運動記述
-  //double array_reg_down[ID_MAX * WALKING_PROCESS];    //右足の運動記述
+  ros::init (argc, argv, "rvis_joint_publisher");
+  //ros::init(argc, argv, "joint_controller");
+  ros::NodeHandle nh;
+  ros::Publisher joint_pub = nh.advertise < sensor_msgs::JointState > ("joint_states", 10);
   //クラスの定義
   LegMotion_xz right_leg;
   LegMotion_xz left_leg;
   left_leg.PhaseShift_pub ();
+  ros_publishe pu; //countデータをros publisheに公開するクラス
   //グラフ化
   //gnuplot1_2 (ID_MAX * WALKING_PROCESS,	//右足
 	//      right_leg.array_reg_hip,
 	//      right_leg.array_reg_knee, 
   //      right_leg.array_reg_ankle);
-  //gnuplot1_2 (ID_MAX * WALKING_PROCESS,	//左足
-	//      left_leg.array_reg_hip,
-	//      left_leg.array_reg_knee, 
-  //      left_leg.array_reg_ankle);
   //gnuplot1_1 (ID_MAX* WALKING_PROCESS,	//左右の移動 20240611
 	//      right_leg.array_hip_up,
   //      right_leg.array_ankle_down);
-  ros::init (argc, argv, "rvis_joint_publisher");
-  ros::NodeHandle nh;
-  ros::Publisher joint_pub = nh.advertise < sensor_msgs::JointState > ("joint_states", 10);
   //20240706 ri4
+/*
   std_msgs::Float64 pos; //--> #include "std_msgs/Float64.h"
   //src/ri4/src/cpp_walk_gazebo.cpp|965 col 13| error: ‘Float64’ is not a member of ‘std_msgs’ 
   ros::Publisher c_pub1  = nh.advertise<std_msgs::Float64>("/ri4/joint1_position_controller/command", 1000);
@@ -999,8 +1051,8 @@ main (int argc, char **argv)
   ros::Publisher c_pub8  = nh.advertise<std_msgs::Float64>("/ri4/joint8_position_controller/command", 1000);
   ros::Publisher c_pub9  = nh.advertise<std_msgs::Float64>("/ri4/joint9_position_controller/command", 1000);
   ros::Publisher c_pub10 = nh.advertise<std_msgs::Float64>("/ri4/joint10_position_controller/command", 1000);
-  ros::Rate loop_rate (10);
-  
+*/  
+  ros::Rate loop_rate (LOOP_RATE);
   sensor_msgs::JointState js0;
   js0.name.resize (16);
   //右足
@@ -1093,6 +1145,8 @@ main (int argc, char **argv)
       joint_pub.publish (js0);
       //Gazebo data作成
       //右足の上から
+      pu.push_message( count );
+/*
       pos.data  = (float) count[3]   ;c_pub1.publish(pos);	//上
       pos.data  = (float) count[4]   ;c_pub2.publish(pos);	//股
       pos.data  = (float) count[5]   ;c_pub3.publish(pos);	//膝
@@ -1104,7 +1158,7 @@ main (int argc, char **argv)
       pos.data  = (float) count[10]  ;c_pub8.publish(pos);	//膝
       pos.data  = (float) count[11]  ;c_pub7.publish(pos);	//股
       pos.data  = (float) count[12]  ;c_pub6.publish(pos);	//上
-      
+*/ 
       loop_rate.sleep ();
       i++;
     }
