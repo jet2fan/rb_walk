@@ -39,7 +39,7 @@
     </collision>
     <inertial>
       <origin xyz="0 0 0.25" rpy="0 0 0"/> 
-      <mass value="20"/>
+      <mass value="5"/>
       <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
   </link>
@@ -53,7 +53,7 @@
     <child link="body2"/>
     <origin xyz="0.1 0 0.0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans1">
     <type>transmission_interface/SimpleTransmission</type>
@@ -92,7 +92,7 @@
      <child link="body3"/>
      <origin xyz="0.1 0 -0.1" rpy="0 0 0"/>
      <axis xyz="1 0 0"/>
-     <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+     <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans2">
     <type>transmission_interface/SimpleTransmission</type>
@@ -131,7 +131,7 @@
     <child link="body4"/>
     <origin xyz="0 0 -0.4" rpy="0 0 3.1415"/>
     <axis xyz="1 0 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans3">
     <type>transmission_interface/SimpleTransmission</type>
@@ -170,7 +170,7 @@
     <child link="body5"/>
     <origin xyz="0 0 -0.4" rpy="0 0 3.1415926"/>
     <axis xyz="1 0 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans4">
     <type>transmission_interface/SimpleTransmission</type>
@@ -205,7 +205,7 @@
     <child link="body6"/>
     <origin xyz="0 0 -0.1" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans5">
     <type>transmission_interface/SimpleTransmission</type>
@@ -245,7 +245,7 @@
     <child  link="body7"/>
     <origin xyz="-0.1 0 0.0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans6">
     <type>transmission_interface/SimpleTransmission</type>
@@ -284,7 +284,7 @@
      <child  link="body8"/>
      <origin xyz="-0.1 0 -0.1" rpy="0 0 0"/>
      <axis xyz="1 0 0"/>
-     <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+     <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans7">
     <type>transmission_interface/SimpleTransmission</type>
@@ -323,7 +323,7 @@
     <child link="body9"/>
     <origin xyz="0 0 -0.4" rpy="0 0 3.1415"/>
     <axis xyz="1 0 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans8">
     <type>transmission_interface/SimpleTransmission</type>
@@ -362,7 +362,7 @@
     <child  link="body10"/>
     <origin xyz="0 0 -0.4" rpy="0 0 3.1415926"/>
     <axis xyz="1 0 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans9">
     <type>transmission_interface/SimpleTransmission</type>
@@ -397,7 +397,7 @@
     <child  link="body11"/>
     <origin xyz="0 0 -0.1" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <limit effort="360" lower="-2.617" upper="2.617" velocity="1.571"/>
   </joint>
   <transmission name="trans10">
     <type>transmission_interface/SimpleTransmission</type>
@@ -430,11 +430,11 @@
   <gazebo reference="body11"> <material>Gazebo/Blue</material> </gazebo> 
 
 <!-- ################################################################### -->
-<!-- migi kata kansetu y -->
+<!-- migi kata y -->
   <joint name="joint11" type="fixed">
     <parent link="body1"/>
     <child  link="body12"/>
-    <origin xyz="0.1 0 0.5" rpy="0 -0.23 0"/>
+    <origin xyz="0.1 0 0.5" rpy="0 -0.54 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -498,7 +498,7 @@
   <joint name="joint14" type="fixed">
     <parent link="body1"/>
     <child  link="body15"/>
-    <origin xyz="-0.1 0 0.5" rpy="0 0.23 0"/>
+    <origin xyz="-0.1 0 0.5" rpy="0 0.54 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
