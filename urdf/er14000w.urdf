@@ -221,7 +221,7 @@
 <!-- migi asi ura -->
   <link name="body6">
     <visual>
-      <geometry> <box size="0.2 0.3 0.01"/> </geometry>
+      <geometry> <box size="0.2 0.3 0.0001"/> </geometry>
       <origin xyz="0 0 -0.005" rpy="0 0 0"/>
       <material name="blue"/>
     </visual>
